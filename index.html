@@ -13,14 +13,13 @@
 
         :root {
             /* 北歐神話色系 */
-            --rune-bg: #0b0f12; /* 深淵黑 */
-            --rune-card: rgba(22, 26, 30, 0.85); /* 黑曜石 */
-            --rune-gold: #d4af37; /* 神域金 */
+            --rune-bg: #0b0f12; 
+            --rune-gold: #d4af37; 
             --rune-gold-glow: rgba(212, 175, 55, 0.4);
-            --rune-ice: #88c0d0; /* 寒冰藍 */
-            --rune-text: #eae0c8; /* 羊皮紙白 */
-            --rune-muted: #5b657a; /* 褪色石灰 */
-            --rune-red: #8b0000; /* 戰神暗紅 */
+            --rune-ice: #88c0d0; 
+            --rune-text: #eae0c8; 
+            --rune-muted: #5b657a; 
+            --rune-red: #8b0000; 
             
             --safe-top: env(safe-area-inset-top, 44px);
             --safe-bottom: env(safe-area-inset-bottom, 34px);
@@ -43,44 +42,48 @@
             flex-direction: column;
         }
 
-        /* 神秘背景：符文法陣的微光感 */
+        /* 穿透感背景：北歐極光與神秘氛圍 */
         .app-background {
             position: fixed;
             top: 0; left: 0; right: 0; bottom: 0;
-            background: radial-gradient(circle at 50% 30%, #1a2430 0%, #050709 100%);
+            background-image: url('https://images.unsplash.com/photo-1531366936337-7784f64f1dc8?q=80&w=1080&auto=format&fit=crop');
+            background-size: cover;
+            background-position: center;
             z-index: -1;
         }
         
-        .app-background::after {
+        /* 覆蓋一層漸層暗色，確保文字可讀性 */
+        .app-background::before {
             content: "";
             position: absolute;
             inset: 0;
-            background-image: repeating-linear-gradient(45deg, rgba(212, 175, 55, 0.02) 0px, rgba(212, 175, 55, 0.02) 2px, transparent 2px, transparent 10px);
-            opacity: 0.5;
+            background: radial-gradient(circle at 50% 30%, rgba(11, 15, 18, 0.2) 0%, rgba(5, 7, 9, 0.85) 100%);
         }
 
         .header {
             padding-top: calc(var(--safe-top) + 15px);
             padding-bottom: 15px;
             text-align: center;
-            backdrop-filter: blur(10px);
-            background: linear-gradient(to bottom, rgba(0,0,0,0.8), transparent);
-            border-bottom: 1px solid rgba(212, 175, 55, 0.2);
-            box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+            /* 強烈的玻璃模糊 */
+            backdrop-filter: blur(20px) saturate(120%);
+            -webkit-backdrop-filter: blur(20px) saturate(120%);
+            background: linear-gradient(to bottom, rgba(0,0,0,0.6), rgba(0,0,0,0.1));
+            border-bottom: 1px solid rgba(212, 175, 55, 0.15);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.4);
         }
 
         .header h1 {
             font-family: 'Cinzel Decorative', cursive;
-            font-size: 20px;
+            font-size: 22px;
             margin: 0;
             color: var(--rune-gold);
             letter-spacing: 3px;
-            text-shadow: 0 0 10px var(--rune-gold-glow);
+            text-shadow: 0 0 15px var(--rune-gold-glow);
         }
         
         .header .subtitle {
-            font-size: 10px;
-            color: var(--rune-muted);
+            font-size: 11px;
+            color: rgba(234, 224, 200, 0.7);
             letter-spacing: 4px;
             margin-top: 4px;
         }
@@ -93,50 +96,50 @@
             -webkit-overflow-scrolling: touch;
         }
 
+        /* 穿透感玻璃卡片 */
         .card {
-            background: var(--rune-card);
-            backdrop-filter: blur(15px);
-            border-radius: 8px;
-            padding: 20px;
+            background: rgba(15, 20, 25, 0.25); 
+            backdrop-filter: blur(25px) saturate(150%);
+            -webkit-backdrop-filter: blur(25px) saturate(150%);
+            border-radius: 24px;
+            padding: 24px 20px;
             margin-bottom: 20px;
-            border: 1px solid rgba(212, 175, 55, 0.3);
-            box-shadow: 0 8px 30px rgba(0,0,0,0.6), inset 0 0 20px rgba(0,0,0,0.5);
+            /* 模擬玻璃的邊緣高光 */
+            border: 1px solid rgba(212, 175, 55, 0.15);
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            border-left: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.4), inset 0 0 30px rgba(212, 175, 55, 0.05);
         }
 
         .section-title {
             font-family: 'Cinzel Decorative', cursive;
-            font-size: 14px;
+            font-size: 15px;
             color: var(--rune-ice);
-            margin-bottom: 15px;
+            margin-bottom: 18px;
             display: flex;
             align-items: center;
             gap: 10px;
             letter-spacing: 2px;
-            text-shadow: 0 0 8px rgba(136, 192, 208, 0.5);
+            text-shadow: 0 0 10px rgba(136, 192, 208, 0.8);
         }
 
         .upload-area {
-            border: 1px solid var(--rune-gold);
-            background: rgba(212, 175, 55, 0.05);
-            border-radius: 4px;
-            height: 120px;
+            border: 2px dashed rgba(212, 175, 55, 0.3);
+            background: rgba(212, 175, 55, 0.03);
+            border-radius: 18px;
+            height: 130px;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             position: relative;
-            transition: all 0.3s ease;
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
 
-        .upload-area::before, .upload-area::after {
-            content: "᛭";
-            position: absolute;
-            color: var(--rune-gold);
-            font-size: 10px;
-            opacity: 0.5;
+        .upload-area:active {
+            transform: scale(0.96);
+            background: rgba(212, 175, 55, 0.08);
         }
-        .upload-area::before { top: 4px; left: 4px; }
-        .upload-area::after { bottom: 4px; right: 4px; }
 
         .upload-area input {
             position: absolute;
@@ -147,19 +150,19 @@
 
         .upload-icon { 
             font-family: serif; 
-            font-size: 40px; 
+            font-size: 42px; 
             color: var(--rune-gold); 
-            margin-bottom: 8px;
-            text-shadow: 0 0 15px var(--rune-gold-glow);
+            margin-bottom: 10px;
+            text-shadow: 0 0 20px var(--rune-gold-glow);
         }
 
+        /* 果凍感按鈕 */
         .rune-btn {
-            background: transparent;
+            background: rgba(25, 30, 35, 0.4);
             color: var(--rune-gold);
-            border: 1px solid var(--rune-gold);
-            border-radius: 4px;
-            padding: 14px;
-            font-size: 15px;
+            border-radius: 20px;
+            padding: 16px;
+            font-size: 16px;
             font-family: 'Noto Serif TC', serif;
             font-weight: 700;
             letter-spacing: 2px;
@@ -169,130 +172,197 @@
             align-items: center;
             justify-content: center;
             gap: 8px;
-            transition: all 0.2s;
+            
+            /* 玻璃果凍邊框與高光 */
+            border: 1px solid rgba(212, 175, 55, 0.4);
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3),
+                        inset 0 4px 6px rgba(255,255,255,0.1),
+                        inset 0 -4px 6px rgba(0,0,0,0.2);
+            
+            /* Q彈回饋動畫 */
+            transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s;
             position: relative;
             overflow: hidden;
         }
 
-        .rune-btn::before {
-            content: '';
-            position: absolute;
-            top: 0; left: -100%;
-            width: 100%; height: 100%;
-            background: linear-gradient(90deg, transparent, var(--rune-gold-glow), transparent);
-            transition: left 0.5s;
+        .rune-btn:active { 
+            transform: scale(0.92); 
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3),
+                        inset 0 4px 12px rgba(0,0,0,0.5),
+                        inset 0 -2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .rune-btn.primary { 
+            background: rgba(212, 175, 55, 0.25); 
+            border-color: rgba(212, 175, 55, 0.6);
+            border-top-color: rgba(255, 255, 255, 0.4);
+            color: #fff;
+            text-shadow: 0 0 8px var(--rune-gold);
+            box-shadow: 0 10px 25px rgba(212, 175, 55, 0.2),
+                        inset 0 4px 8px rgba(255,255,255,0.3),
+                        inset 0 -4px 8px rgba(212, 175, 55, 0.3);
+        }
+        
+        .rune-btn.success { 
+            background: rgba(136, 192, 208, 0.25); 
+            border-color: rgba(136, 192, 208, 0.6);
+            border-top-color: rgba(255, 255, 255, 0.4);
+            color: #fff; 
+            text-shadow: 0 0 8px var(--rune-ice);
+            box-shadow: 0 10px 25px rgba(136, 192, 208, 0.2),
+                        inset 0 4px 8px rgba(255,255,255,0.3),
+                        inset 0 -4px 8px rgba(136, 192, 208, 0.3);
+        }
+        
+        .rune-btn.danger { 
+            background: rgba(139, 0, 0, 0.25); 
+            border-color: rgba(139, 0, 0, 0.6);
+            border-top-color: rgba(255, 255, 255, 0.3);
+            color: #fff;
+            text-shadow: 0 0 8px var(--rune-red);
+            box-shadow: 0 10px 25px rgba(139, 0, 0, 0.2),
+                        inset 0 4px 8px rgba(255,255,255,0.2),
+                        inset 0 -4px 8px rgba(139, 0, 0, 0.3);
         }
 
-        .rune-btn:active::before { left: 100%; }
-        .rune-btn:active { background: rgba(212, 175, 55, 0.2); transform: scale(0.98); }
-        
-        .rune-btn.primary { background: rgba(212, 175, 55, 0.15); box-shadow: 0 0 10px var(--rune-gold-glow); }
-        .rune-btn.success { color: var(--rune-ice); border-color: var(--rune-ice); background: rgba(136, 192, 208, 0.1); }
-        .rune-btn.danger { color: var(--rune-text); border-color: var(--rune-muted); }
-
         .input-group { margin-top: 18px; }
-        .label-row { display: flex; justify-content: space-between; font-size: 13px; margin-bottom: 10px; color: var(--rune-text); letter-spacing: 1px; }
+        .label-row { display: flex; justify-content: space-between; font-size: 13px; margin-bottom: 12px; color: rgba(255,255,255,0.8); letter-spacing: 1px; }
         
         input[type="range"] {
             -webkit-appearance: none;
             width: 100%;
-            height: 2px;
-            background: var(--rune-muted);
+            height: 4px;
+            border-radius: 2px;
+            background: rgba(255,255,255,0.1);
             position: relative;
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.5);
         }
 
         input[type="range"]::-webkit-slider-thumb {
             -webkit-appearance: none;
-            width: 18px; height: 18px;
-            background: var(--rune-bg);
+            width: 22px; height: 22px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.9);
             border: 2px solid var(--rune-gold);
-            transform: rotate(45deg); /* 菱形滑塊 */
-            box-shadow: 0 0 8px var(--rune-gold-glow);
+            box-shadow: 0 0 10px var(--rune-gold-glow), 0 2px 5px rgba(0,0,0,0.5);
             cursor: pointer;
+            transition: transform 0.2s;
+        }
+        
+        input[type="range"]::-webkit-slider-thumb:active {
+            transform: scale(1.2);
         }
 
         .speed-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 10px;
+            gap: 12px;
             margin-bottom: 15px;
         }
 
+        /* 果凍感晶片按鈕 */
         .speed-chip {
-            background: rgba(0,0,0,0.5);
-            border: 1px solid var(--rune-muted);
-            border-radius: 4px;
-            padding: 12px;
+            background: rgba(0,0,0,0.3);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 16px;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            padding: 14px 8px;
             text-align: center;
             font-family: 'Cinzel Decorative', cursive;
             font-weight: 700;
-            color: var(--rune-muted);
-            transition: all 0.3s;
+            color: rgba(255,255,255,0.6);
             font-size: 14px;
+            /* 果凍光澤 */
+            box-shadow: inset 0 2px 4px rgba(255,255,255,0.1), 0 4px 10px rgba(0,0,0,0.2);
+            transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s, background 0.3s;
         }
 
+        .speed-chip:active { transform: scale(0.88); }
+        
         .speed-chip.active { 
-            border-color: var(--rune-ice); 
-            color: var(--rune-ice);
-            background: rgba(136, 192, 208, 0.15);
-            text-shadow: 0 0 8px rgba(136, 192, 208, 0.6);
-            box-shadow: inset 0 0 10px rgba(136, 192, 208, 0.2);
+            background: rgba(136, 192, 208, 0.25);
+            border-color: rgba(136, 192, 208, 0.6);
+            border-top-color: rgba(255,255,255,0.4);
+            color: #fff;
+            text-shadow: 0 0 8px var(--rune-ice);
+            box-shadow: 0 8px 15px rgba(136, 192, 208, 0.2), 
+                        inset 0 3px 6px rgba(255,255,255,0.3),
+                        inset 0 -3px 6px rgba(136, 192, 208, 0.2);
         }
 
         .tab-bar {
             position: fixed;
             bottom: 0; left: 0; right: 0;
             height: calc(var(--safe-bottom) + 65px);
-            background: rgba(10, 12, 15, 0.95);
-            backdrop-filter: blur(20px);
+            background: rgba(10, 12, 15, 0.5);
+            backdrop-filter: blur(30px) saturate(180%);
+            -webkit-backdrop-filter: blur(30px) saturate(180%);
             display: flex;
             justify-content: space-around;
             padding-top: 10px;
-            border-top: 1px solid rgba(212, 175, 55, 0.3);
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
             z-index: 100;
+            box-shadow: 0 -5px 20px rgba(0,0,0,0.3);
         }
 
         .tab-item {
             display: flex;
             flex-direction: column;
             align-items: center;
-            color: var(--rune-muted);
+            color: rgba(255,255,255,0.4);
             font-size: 11px;
             gap: 6px;
             letter-spacing: 1px;
-            transition: color 0.3s;
+            transition: color 0.3s, transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
+        
+        .tab-item:active { transform: scale(0.9); }
 
         .tab-item.active { 
             color: var(--rune-gold); 
-            text-shadow: 0 0 8px var(--rune-gold-glow);
+            text-shadow: 0 0 10px var(--rune-gold-glow);
+            transform: translateY(-2px);
         }
         
-        .tab-icon { font-family: serif; font-size: 22px; }
+        .tab-icon { font-family: serif; font-size: 24px; }
 
         .progress-box { margin-top: 20px; display: none; }
-        .bar-bg { background: rgba(0,0,0,0.5); border: 1px solid var(--rune-muted); height: 6px; margin-top: 10px; position: relative; }
+        .bar-bg { 
+            background: rgba(0,0,0,0.6); 
+            border: 1px solid rgba(255,255,255,0.1); 
+            border-radius: 10px;
+            height: 8px; margin-top: 10px; position: relative; overflow: hidden;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.5);
+        }
         .bar-fill { 
-            background: var(--rune-gold); 
+            background: linear-gradient(90deg, transparent, var(--rune-gold), transparent);
+            background-size: 200% 100%;
+            border-radius: 10px;
             height: 100%; width: 0%; 
             transition: width 0.2s; 
-            box-shadow: 0 0 10px var(--rune-gold);
+            box-shadow: 0 0 15px var(--rune-gold);
+            animation: flowGlow 2s linear infinite;
         }
+        @keyframes flowGlow { 0% { background-position: 100% 0; } 100% { background-position: -100% 0; } }
         
         .result-img { 
             width: 100%; 
-            border-radius: 4px; 
+            border-radius: 16px; 
             margin-top: 15px; 
-            border: 2px solid var(--rune-gold);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.8); 
+            border: 1px solid rgba(212, 175, 55, 0.4);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.6), 0 0 20px var(--rune-gold-glow); 
         }
 
-        .page { display: none; animation: fadeIn 0.4s ease forwards; }
+        .page { display: none; animation: fadeIn 0.5s cubic-bezier(0.2, 0.8, 0.2, 1) forwards; }
         .page.active { display: block; }
         
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
+            from { opacity: 0; transform: translateY(20px) scale(0.98); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
         }
         
         #ios-video-container {
@@ -321,16 +391,16 @@
             <div class="upload-area">
                 <input type="file" accept="video/*" onchange="loadMedia(this, 'video')">
                 <span class="upload-icon">ᛟ</span>
-                <span style="font-size:13px; color:var(--rune-muted); letter-spacing:1px;" id="name-video">獻上凡界影像 (選擇影片)</span>
+                <span style="font-size:13px; color:rgba(255,255,255,0.6); letter-spacing:1px;" id="name-video">獻上凡界影像 (選擇影片)</span>
             </div>
             
             <div class="input-group">
-                <div class="label-row"><span>法陣尺度 (解析度)</span><span id="val-width" style="color:var(--rune-gold)">320px</span></div>
+                <div class="label-row"><span>法陣尺度 (解析度)</span><span id="val-width" style="color:var(--rune-gold); text-shadow:0 0 5px var(--rune-gold-glow);">320px</span></div>
                 <input type="range" min="160" max="640" step="20" value="320" oninput="updateVal('width', this.value)">
             </div>
 
             <div class="input-group">
-                <div class="label-row"><span>時之流速 (FPS)</span><span id="val-fps" style="color:var(--rune-gold)">12</span></div>
+                <div class="label-row"><span>時之流速 (FPS)</span><span id="val-fps" style="color:var(--rune-gold); text-shadow:0 0 5px var(--rune-gold-glow);">12</span></div>
                 <input type="range" min="5" max="30" value="12" oninput="updateVal('fps', this.value)">
             </div>
 
@@ -348,11 +418,11 @@
     <!-- 壓縮頁 (ᛒ Berkanan: Birch/Birth) -->
     <div id="page-compress" class="page">
         <div class="card">
-            <span class="section-title"><span style="font-size:18px;">ᛒ</span> 封印壓縮陣</span>
+            <span class="section-title"><span style="font-size:18px; color:var(--rune-ice)">ᛒ</span> 封印壓縮陣</span>
             <div class="upload-area">
                 <input type="file" accept="image/gif" id="input-compress" onchange="loadMedia(this, 'compress')">
-                <span class="upload-icon">ᛒ</span>
-                <span style="font-size:13px; color:var(--rune-muted); letter-spacing:1px;" id="name-compress">置入待封印的法器 (GIF)</span>
+                <span class="upload-icon" style="color:var(--rune-ice); text-shadow:0 0 20px rgba(136,192,208,0.5)">ᛒ</span>
+                <span style="font-size:13px; color:rgba(255,255,255,0.6); letter-spacing:1px;" id="name-compress">置入待封印的法器 (GIF)</span>
             </div>
             
             <div class="input-group">
@@ -364,9 +434,9 @@
                 </div>
             </div>
 
-            <button class="rune-btn" style="border-color:var(--rune-ice); color:var(--rune-ice);" onclick="startCompress()">啟動結界 (執行壓縮)</button>
+            <button class="rune-btn" style="color:var(--rune-ice); border-color:rgba(136,192,208,0.4);" onclick="startCompress()">啟動結界 (執行壓縮)</button>
             <div id="prog-compress" class="progress-box">
-                <div class="bar-bg"><div id="fill-compress" class="bar-fill" style="background:var(--rune-ice); box-shadow:0 0 10px var(--rune-ice);"></div></div>
+                <div class="bar-bg"><div id="fill-compress" class="bar-fill" style="background:var(--rune-ice); box-shadow:0 0 15px var(--rune-ice);"></div></div>
             </div>
             <div id="res-compress"></div>
         </div>
@@ -379,7 +449,7 @@
             <div class="upload-area">
                 <input type="file" accept="image/gif" id="input-speed" onchange="loadMedia(this, 'speed')">
                 <span class="upload-icon">ᛋ</span>
-                <span style="font-size:13px; color:var(--rune-muted); letter-spacing:1px;" id="name-speed">置入需扭曲時間之物</span>
+                <span style="font-size:13px; color:rgba(255,255,255,0.6); letter-spacing:1px;" id="name-speed">置入需扭曲時間之物</span>
             </div>
 
             <div class="input-group">
@@ -394,7 +464,7 @@
                 </div>
             </div>
 
-            <button class="rune-btn" style="border-color:var(--rune-gold); color:var(--rune-gold);" onclick="startSpeed()">干涉時間軸 (調整速度)</button>
+            <button class="rune-btn" onclick="startSpeed()">干涉時間軸 (調整速度)</button>
             <div id="prog-speed" class="progress-box">
                 <div class="bar-bg"><div id="fill-speed" class="bar-fill"></div></div>
             </div>
