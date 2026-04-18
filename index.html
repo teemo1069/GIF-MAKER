@@ -2,427 +2,536 @@
 <html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pixel GIF Studio - 全功能版</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="PixelStudio">
+    <title>Pixel Studio - iOS Edition</title>
+    
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323:wght@400&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=SF+Pro+Display:wght@400;600&family=Press+Start+2P&display=swap');
 
         :root {
-            --px-bg: #1a1a2e;
-            --px-panel: #16213e;
-            --px-card: #0f3460;
-            --px-accent: #e94560;
-            --px-yellow: #f5a623;
-            --px-green: #4ecdc4;
-            --px-purple: #a855f7;
-            --px-white: #e8e8e8;
-            --px-gray: #888;
+            --ios-bg: #000000;
+            --ios-card: rgba(28, 28, 30, 0.8);
+            --ios-accent: #0A84FF;
+            --ios-green: #30D158;
+            --ios-red: #FF453A;
+            --ios-yellow: #FFD60A;
+            --safe-top: env(safe-area-inset-top, 44px);
+            --safe-bottom: env(safe-area-inset-bottom, 34px);
         }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; image-rendering: pixelated; }
+        * {
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+            user-select: none;
+        }
 
         body {
-            background: var(--px-bg);
-            color: var(--px-white);
-            font-family: 'VT323', monospace;
-            font-size: 18px;
-            background-image: repeating-linear-gradient(0deg, transparent, transparent 31px, rgba(232,68,96,0.05) 32px),
-                              repeating-linear-gradient(90deg, transparent, transparent 31px, rgba(232,68,96,0.05) 32px);
+            margin: 0;
+            background-color: var(--ios-bg);
+            color: #fff;
+            font-family: -apple-system, 'SF Pro Display', sans-serif;
+            overflow: hidden; 
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
         }
 
-        .app { max-width: 820px; margin: 0 auto; padding: 20px 16px 40px; }
+        .app-background {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: linear-gradient(125deg, #1a1a2e 0%, #000 100%);
+            z-index: -1;
+        }
 
-        .header { text-align: center; margin-bottom: 24px; }
-        .title { font-family: 'Press Start 2P', monospace; font-size: 18px; color: var(--px-accent); text-shadow: 3px 3px 0 #000; margin-bottom: 8px; }
+        .header {
+            padding-top: calc(var(--safe-top) + 10px);
+            padding-bottom: 15px;
+            text-align: center;
+            backdrop-filter: blur(20px);
+            background: rgba(0,0,0,0.5);
+            border-bottom: 0.5px solid rgba(255,255,255,0.1);
+        }
+
+        .header h1 {
+            font-family: 'Press Start 2P', cursive;
+            font-size: 14px;
+            margin: 0;
+            color: var(--ios-accent);
+            letter-spacing: 1px;
+        }
+
+        .main-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px 16px;
+            padding-bottom: calc(var(--safe-bottom) + 100px);
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .card {
+            background: var(--ios-card);
+            backdrop-filter: blur(15px);
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border: 0.5px solid rgba(255,255,255,0.1);
+        }
+
+        .section-title {
+            font-size: 12px;
+            font-family: 'Press Start 2P';
+            color: var(--ios-yellow);
+            margin-bottom: 15px;
+            display: block;
+        }
+
+        .upload-area {
+            border: 2px dashed rgba(255,255,255,0.2);
+            border-radius: 15px;
+            height: 120px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .upload-area input {
+            position: absolute;
+            width: 100%; height: 100%;
+            opacity: 0;
+        }
+
+        .upload-icon { font-size: 32px; margin-bottom: 8px; }
+
+        .ios-btn {
+            background: var(--ios-accent);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            padding: 14px;
+            font-size: 16px;
+            font-weight: 600;
+            width: 100%;
+            margin-top: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: transform 0.1s;
+        }
+
+        .ios-btn:active { transform: scale(0.96); opacity: 0.8; }
+        .ios-btn.secondary { background: #323235; }
+        .ios-btn.success { background: var(--ios-green); color: #000; }
+
+        .input-group { margin-top: 15px; }
+        .label-row { display: flex; justify-content: space-between; font-size: 14px; margin-bottom: 8px; color: #8e8e93; }
         
-        .tabs { display: flex; gap: 4px; margin-bottom: 16px; border-bottom: 3px solid var(--px-accent); }
-        .tab { font-family: 'Press Start 2P', monospace; font-size: 9px; padding: 10px 14px; background: var(--px-panel); border: 2px solid var(--px-gray); border-bottom: none; color: var(--px-gray); cursor: pointer; }
-        .tab.active { background: var(--px-card); color: var(--px-yellow); border-color: var(--px-accent); }
+        input[type="range"] {
+            -webkit-appearance: none;
+            width: 100%;
+            height: 6px;
+            background: #3a3a3c;
+            border-radius: 3px;
+        }
 
-        .panel { background: var(--px-panel); border: 3px solid var(--px-accent); padding: 20px; box-shadow: 6px 6px 0 #000; display: none; }
-        .panel.active { display: block; }
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 24px; height: 24px;
+            background: #fff;
+            border-radius: 50%;
+            box-shadow: 0 3px 8px rgba(0,0,0,0.3);
+        }
 
-        .section-label { font-family: 'Press Start 2P', monospace; font-size: 9px; color: var(--px-green); margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
-        .section-label::before { content: '▶'; color: var(--px-accent); }
+        .speed-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+            margin-bottom: 15px;
+        }
 
-        .drop-zone { border: 3px dashed var(--px-purple); background: rgba(168,85,247,0.07); padding: 30px; text-align: center; position: relative; cursor: pointer; }
-        .drop-zone input { position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; }
-        .drop-icon { font-size: 40px; display: block; margin-bottom: 10px; }
+        .speed-chip {
+            background: #2c2c2e;
+            border-radius: 10px;
+            padding: 12px;
+            text-align: center;
+            font-weight: 600;
+        }
 
-        .settings-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 16px; }
-        .setting-box { background: var(--px-card); border: 2px solid var(--px-gray); padding: 12px; }
-        .setting-title { font-family: 'Press Start 2P', monospace; font-size: 8px; color: var(--px-yellow); margin-bottom: 8px; }
+        .speed-chip.active { background: var(--ios-accent); }
 
-        .px-slider { width: 100%; height: 6px; background: #333; outline: none; -webkit-appearance: none; }
-        .px-slider::-webkit-slider-thumb { -webkit-appearance: none; width: 14px; height: 14px; background: var(--px-accent); border: 2px solid #000; cursor: pointer; }
+        .tab-bar {
+            position: fixed;
+            bottom: 0; left: 0; right: 0;
+            height: calc(var(--safe-bottom) + 65px);
+            background: rgba(20, 20, 20, 0.94);
+            backdrop-filter: blur(20px);
+            display: flex;
+            justify-content: space-around;
+            padding-top: 10px;
+            border-top: 0.5px solid rgba(255,255,255,0.1);
+            z-index: 100;
+        }
+
+        .tab-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: #8e8e93;
+            font-size: 10px;
+            gap: 4px;
+        }
+
+        .tab-item.active { color: var(--ios-accent); }
+        .tab-icon { font-size: 24px; }
+
+        .progress-box { margin-top: 15px; display: none; }
+        .bar-bg { background: #3a3a3c; height: 8px; border-radius: 4px; overflow: hidden; margin-top: 8px; }
+        .bar-fill { background: var(--ios-accent); height: 100%; width: 0%; transition: width 0.2s; }
         
-        .px-input, .px-select { width: 100%; background: #0a0a1a; color: #fff; border: 2px solid var(--px-gray); padding: 5px; font-family: 'VT323'; font-size: 18px; }
+        .result-img { width: 100%; border-radius: 12px; margin-top: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
 
-        .btn { font-family: 'Press Start 2P', monospace; font-size: 9px; padding: 12px 18px; border: none; cursor: pointer; transition: 0.1s; display: inline-flex; align-items: center; gap: 8px; color: #fff; }
-        .btn:active { transform: translate(2px, 2px); }
-        .btn:disabled { opacity: 0.4; cursor: not-allowed; }
-        .btn-primary { background: var(--px-accent); box-shadow: 4px 4px 0 #7a0000; }
-        .btn-green { background: var(--px-green); color: #000; box-shadow: 4px 4px 0 #1a5c58; }
-        .btn-purple { background: var(--px-purple); box-shadow: 4px 4px 0 #4a1a7a; }
-        .btn-yellow { background: var(--px-yellow); color: #000; box-shadow: 4px 4px 0 #7a5000; }
-
-        .progress-area { margin-top: 20px; display: none; }
-        .progress-area.show { display: block; }
-        .progress-bar { height: 15px; background: #111; border: 2px solid var(--px-gray); margin-top: 8px; }
-        .progress-fill { height: 100%; background: var(--px-accent); width: 0%; transition: width 0.1s; }
-
-        .log-box { background: #000; color: var(--px-green); padding: 10px; height: 80px; overflow-y: auto; font-size: 14px; margin-top: 10px; border: 1px solid #333; }
-        .result-card { background: var(--px-card); border: 3px solid var(--px-green); padding: 15px; margin-top: 20px; text-align: center; }
-        .gif-preview { max-width: 100%; border: 2px solid var(--px-purple); margin: 10px 0; }
-
-        .file-info { display: none; background: #0a0a1a; padding: 10px; margin-top: 10px; border: 1px solid var(--px-green); font-size: 14px; color: var(--px-green); }
-
-        /* 倍率列表：最高倍率在最頂端 */
-        .speed-presets { display: grid; grid-template-columns: repeat(5, 1fr); gap: 5px; margin-top: 10px; }
+        .page { display: none; }
+        .page.active { display: block; }
+        
+        /* 隱藏的影片區塊（為了騙過 iOS） */
+        #ios-video-container {
+            position: absolute;
+            top: -9999px;
+            left: -9999px;
+            opacity: 0;
+            pointer-events: none;
+        }
     </style>
 </head>
 <body>
 
-<div class="app">
-    <div class="header">
-        <div class="title">★ GIF STUDIO PRO ★</div>
-        <p>最強影像處理工作坊</p>
+<div class="app-background"></div>
+
+<!-- 必須放在 DOM 裡 iOS 才會乖乖解碼影片 -->
+<div id="ios-video-container"></div>
+
+<header class="header">
+    <h1>PIXEL STUDIO</h1>
+</header>
+
+<main class="main-content">
+    
+    <!-- 轉換頁 -->
+    <div id="page-convert" class="page active">
+        <div class="card">
+            <span class="section-title">VIDEO TO GIF</span>
+            <div class="upload-area">
+                <input type="file" accept="video/*" onchange="loadMedia(this, 'video')">
+                <span class="upload-icon">🎞️</span>
+                <span style="font-size:14px; color:#8e8e93" id="name-video">選擇影片檔案</span>
+            </div>
+            
+            <div class="input-group">
+                <div class="label-row"><span>解析度</span><span id="val-width">320px</span></div>
+                <input type="range" min="160" max="640" step="20" value="320" oninput="updateVal('width', this.value)">
+            </div>
+
+            <div class="input-group">
+                <div class="label-row"><span>FPS</span><span id="val-fps">12</span></div>
+                <input type="range" min="5" max="30" value="12" oninput="updateVal('fps', this.value)">
+            </div>
+
+            <button class="ios-btn" onclick="startConvert()">開始處理</button>
+            
+            <div id="prog-convert" class="progress-box">
+                <div class="label-row"><span id="log-convert">準備中...</span></div>
+                <div class="bar-bg"><div id="fill-convert" class="bar-fill"></div></div>
+            </div>
+
+            <div id="res-convert"></div>
+        </div>
     </div>
 
-    <div class="tabs">
-        <div class="tab active" onclick="switchTab('convert')">🎬 轉換</div>
-        <div class="tab" onclick="switchTab('compress')">📦 壓縮</div>
-        <div class="tab" onclick="switchTab('speed')">⚡ 速度</div>
-        <div class="tab" onclick="switchTab('history')">📁 紀錄</div>
+    <!-- 壓縮頁 -->
+    <div id="page-compress" class="page">
+        <div class="card">
+            <span class="section-title">COMPRESSOR</span>
+            <div class="upload-area">
+                <input type="file" accept="image/gif" id="input-compress" onchange="loadMedia(this, 'compress')">
+                <span class="upload-icon">📦</span>
+                <span style="font-size:14px; color:#8e8e93" id="name-compress">選擇要壓縮的 GIF</span>
+            </div>
+            
+            <div class="input-group">
+                <div class="label-row"><span>壓縮強度</span></div>
+                <div class="speed-grid">
+                    <div class="speed-chip active" onclick="setComp(0.5, 64, this)">中等</div>
+                    <div class="speed-chip" onclick="setComp(0.3, 32, this)">極限</div>
+                    <div class="speed-chip" onclick="setComp(0.8, 128, this)">輕微</div>
+                </div>
+            </div>
+
+            <button class="ios-btn" style="background:var(--ios-yellow); color:#000;" onclick="startCompress()">執行壓縮</button>
+            <div id="prog-compress" class="progress-box">
+                <div class="bar-bg"><div id="fill-compress" class="bar-fill"></div></div>
+            </div>
+            <div id="res-compress"></div>
+        </div>
     </div>
 
-    <!-- 轉換面板 -->
-    <div id="panel-convert" class="panel active">
-        <div class="section-label">影片轉 GIF</div>
-        <div class="drop-zone">
-            <input type="file" accept="video/*" onchange="handleFileSelect(event, 'video')">
-            <span class="drop-icon">🎥</span>
-            <p>點擊或拖入影片 (MP4/MOV)</p>
-        </div>
-        <div id="info-video" class="file-info"></div>
+    <!-- 速度頁 -->
+    <div id="page-speed" class="page">
+        <div class="card">
+            <span class="section-title">SPEED TUNER</span>
+            <div class="upload-area">
+                <input type="file" accept="image/gif" id="input-speed" onchange="loadMedia(this, 'speed')">
+                <span class="upload-icon">⚡</span>
+                <span style="font-size:14px; color:#8e8e93" id="name-speed">選擇 GIF 調整速度</span>
+            </div>
 
-        <div class="settings-grid">
-            <div class="setting-box">
-                <div class="setting-title">FPS (影格率)</div>
-                <input type="range" min="5" max="24" value="12" class="px-slider" id="conv-fps">
+            <div class="input-group">
+                <div class="label-row"><span>預設倍率 (最高優先)</span></div>
+                <div class="speed-grid">
+                    <!-- 依照您的要求：最高倍率排在列表最頂端 -->
+                    <div class="speed-chip" onclick="setSpd(4, this)">4.0x</div>
+                    <div class="speed-chip" onclick="setSpd(2, this)">2.0x</div>
+                    <div class="speed-chip active" onclick="setSpd(1, this)">1.0x</div>
+                    <div class="speed-chip" onclick="setSpd(0.5, this)">0.5x</div>
+                    <div class="speed-chip" onclick="setSpd(0.25, this)">0.25x</div>
+                </div>
             </div>
-            <div class="setting-box">
-                <div class="setting-title">寬度 (PX)</div>
-                <input type="range" min="100" max="600" value="320" step="10" class="px-slider" id="conv-width">
+
+            <button class="ios-btn" style="background:var(--ios-green); color:#000;" onclick="startSpeed()">調整速度</button>
+            <div id="prog-speed" class="progress-box">
+                <div class="bar-bg"><div id="fill-speed" class="bar-fill"></div></div>
             </div>
-            <div class="setting-box">
-                <div class="setting-title">開始時間 (秒)</div>
-                <input type="number" value="0" step="0.5" class="px-input" id="conv-start">
-            </div>
-            <div class="setting-box">
-                <div class="setting-title">持續長度 (秒)</div>
-                <input type="number" value="3" step="0.5" class="px-input" id="conv-duration">
-            </div>
+            <div id="res-speed"></div>
         </div>
-        <button class="btn btn-primary" style="margin-top:15px; width:100%;" id="btn-convert" onclick="processVideo()">🚀 開始轉換</button>
-        
-        <div id="prog-convert" class="progress-area">
-            <div class="progress-bar"><div id="fill-convert" class="progress-fill"></div></div>
-            <div id="log-convert" class="log-box"></div>
-        </div>
-        <div id="res-convert"></div>
     </div>
 
-    <!-- 壓縮面板 -->
-    <div id="panel-compress" class="panel">
-        <div class="section-label">壓縮 GIF 檔案</div>
-        <div class="drop-zone">
-            <input type="file" accept="image/gif" id="input-compress" onchange="handleFileSelect(event, 'compress')">
-            <span class="drop-icon">📦</span>
-            <p>點擊或拖入 GIF 進行壓縮</p>
-        </div>
-        <div id="info-compress" class="file-info"></div>
-        
-        <div class="settings-grid">
-            <div class="setting-box">
-                <div class="setting-title">尺寸縮放</div>
-                <select id="comp-scale" class="px-select">
-                    <option value="1">100% (不縮放)</option>
-                    <option value="0.75">75%</option>
-                    <option value="0.5" selected>50%</option>
-                    <option value="0.25">25%</option>
-                </select>
-            </div>
-            <div class="setting-box">
-                <div class="setting-title">色彩數量</div>
-                <select id="comp-colors" class="px-select">
-                    <option value="256">256 色</option>
-                    <option value="128" selected>128 色</option>
-                    <option value="64">64 色</option>
-                    <option value="32">32 色</option>
-                </select>
-            </div>
-        </div>
-        <button class="btn btn-purple" style="margin-top:15px; width:100%;" onclick="processCompress()">📦 執行壓縮</button>
-        
-        <div id="prog-compress" class="progress-area">
-            <div class="progress-bar"><div id="fill-compress" class="progress-fill"></div></div>
-            <div id="log-compress" class="log-box"></div>
-        </div>
-        <div id="res-compress"></div>
+</main>
+
+<nav class="tab-bar">
+    <div class="tab-item active" onclick="switchTab('convert', this)">
+        <span class="tab-icon">🎬</span>
+        <span>轉換</span>
     </div>
-
-    <!-- 速度面板 -->
-    <div id="panel-speed" class="panel">
-        <div class="section-label">調整播放速度</div>
-        <div class="drop-zone">
-            <input type="file" accept="image/gif" id="input-speed" onchange="handleFileSelect(event, 'speed')">
-            <span class="drop-icon">⚡</span>
-            <p>點擊或拖入 GIF 調整速度</p>
-        </div>
-        <div id="info-speed" class="file-info"></div>
-
-        <div class="speed-presets">
-            <!-- 根據記憶：最高倍率在最頂端 -->
-            <button class="btn btn-primary" onclick="setSpeedValue(4)">4.0x</button>
-            <button class="btn btn-primary" onclick="setSpeedValue(2)">2.0x</button>
-            <button class="btn btn-green" onclick="setSpeedValue(1)">1.0x</button>
-            <button class="btn btn-yellow" onclick="setSpeedValue(0.5)">0.5x</button>
-            <button class="btn btn-yellow" onclick="setSpeedValue(0.25)">0.25x</button>
-        </div>
-        
-        <div class="setting-box" style="margin-top:10px;">
-            <div class="setting-title">自定義倍率 (倍)</div>
-            <input type="number" id="speed-val" value="1.0" step="0.1" class="px-input">
-        </div>
-        
-        <button class="btn btn-green" style="margin-top:15px; width:100%;" onclick="processSpeed()">⚡ 調整速度並輸出</button>
-        
-        <div id="prog-speed" class="progress-area">
-            <div class="progress-bar"><div id="fill-speed" class="progress-fill"></div></div>
-            <div id="log-speed" class="log-box"></div>
-        </div>
-        <div id="res-speed"></div>
+    <div class="tab-item" onclick="switchTab('compress', this)">
+        <span class="tab-icon">📦</span>
+        <span>壓縮</span>
     </div>
-
-    <!-- 紀錄面板 -->
-    <div id="panel-history" class="panel">
-        <div class="section-label">歷史處理紀錄</div>
-        <div id="history-list"></div>
+    <div class="tab-item" onclick="switchTab('speed', this)">
+        <span class="tab-icon">⚡</span>
+        <span>速度</span>
     </div>
-</div>
+</nav>
 
+<!-- 核心庫 -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gif.js/0.2.0/gif.js"></script>
-<!-- 關鍵：由 JS 直接解析 GIF 的庫 -->
 <script src="https://cdn.jsdelivr.net/npm/gif-frames@1.0.1/dist/gif-frames.min.js"></script>
 
 <script>
-    const state = {
-        videoFile: null,
-        compressFile: null,
-        speedFile: null,
-        workerUrl: null,
-        history: []
+    const AppState = {
+        video: null,
+        compress: null,
+        speed: null,
+        workerUrl: '',
+        config: { width: 320, fps: 12, comp: { scale: 0.5, colors: 64 }, speed: 1.0 }
     };
 
-    // 初始化：抓取 Worker 腳本避免跨域卡住
-    async function init() {
-        try {
-            const resp = await fetch('https://cdnjs.cloudflare.com/ajax/libs/gif.js/0.2.0/gif.worker.js');
-            const blob = await resp.blob();
-            state.workerUrl = URL.createObjectURL(blob);
-            console.log("Worker Ready");
-        } catch(e) { console.error("Worker Load Failed"); }
-    }
-    init();
+    (async () => {
+        const resp = await fetch('https://cdnjs.cloudflare.com/ajax/libs/gif.js/0.2.0/gif.worker.js');
+        AppState.workerUrl = URL.createObjectURL(await resp.blob());
+    })();
 
-    function switchTab(id) {
-        document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
-        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-        document.getElementById('panel-' + id).classList.add('active');
-        event.currentTarget.classList.add('active');
-        if(id === 'history') renderHistory();
+    function switchTab(p, el) {
+        document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
+        document.querySelectorAll('.tab-item').forEach(tab => tab.classList.remove('active'));
+        document.getElementById(`page-${p}`).classList.add('active');
+        el.classList.add('active');
     }
 
-    function setSpeedValue(v) { document.getElementById('speed-val').value = v; }
+    function updateVal(key, val) {
+        AppState.config[key] = parseInt(val);
+        document.getElementById(`val-${key}`).textContent = val + (key==='width'?'px':'');
+    }
 
-    function handleFileSelect(e, type) {
-        const file = e.target.files[0];
+    function setComp(s, c, el) {
+        AppState.config.comp = { scale: s, colors: c };
+        document.querySelectorAll('#page-compress .speed-chip').forEach(c => c.classList.remove('active'));
+        el.classList.add('active');
+    }
+
+    function setSpd(v, el) {
+        AppState.config.speed = v;
+        document.querySelectorAll('#page-speed .speed-chip').forEach(c => c.classList.remove('active'));
+        el.classList.add('active');
+    }
+
+    function loadMedia(input, type) {
+        const file = input.files[0];
         if(!file) return;
-        const info = document.getElementById(`info-${type}`);
-        info.style.display = 'block';
-        info.innerHTML = `檔案: ${file.name} (${(file.size/1024/1024).toFixed(2)} MB)`;
-        state[`${type}File`] = file;
+        AppState[type] = file;
+        document.getElementById(`name-${type}`).textContent = file.name;
+        document.getElementById(`name-${type}`).style.color = 'var(--ios-accent)';
     }
 
-    function addLog(id, msg) {
-        const log = document.getElementById(`log-${id}`);
-        const p = document.createElement('p');
-        p.textContent = `> ${msg}`;
-        log.appendChild(p);
-        log.scrollTop = log.scrollHeight;
-    }
-
-    // 1. 影片轉 GIF
-    async function processVideo() {
-        if(!state.videoFile || !state.workerUrl) return alert("請選擇影片或等待初始化");
-        const fps = parseInt(document.getElementById('conv-fps').value);
-        const width = parseInt(document.getElementById('conv-width').value);
-        const start = parseFloat(document.getElementById('conv-start').value);
-        const duration = parseFloat(document.getElementById('conv-duration').value);
-
-        document.getElementById('prog-convert').style.display = 'block';
-        document.getElementById('log-convert').innerHTML = '';
-        addLog('convert', '準備影片資源...');
+    // --- 【重大修正】影片轉 GIF (修復所有黑畫面問題) ---
+    async function startConvert() {
+        if(!AppState.video) return;
+        const prog = document.getElementById('prog-convert');
+        const fill = document.getElementById('fill-convert');
+        prog.style.display = 'block';
 
         const video = document.createElement('video');
-        video.src = URL.createObjectURL(state.videoFile);
+        video.src = URL.createObjectURL(AppState.video);
         video.muted = true;
-        
-        video.onloadedmetadata = async () => {
-            const canvas = document.createElement('canvas');
-            const ctx = canvas.getContext('2d');
-            const aspect = video.videoHeight / video.videoWidth;
-            canvas.width = width;
-            canvas.height = width * aspect;
+        video.playsInline = true; // iOS 強制要求
+        video.setAttribute('playsinline', '');
 
-            const gif = new GIF({
-                workers: 2, quality: 10, width: canvas.width, height: canvas.height, workerScript: state.workerUrl
-            });
+        // 解決黑屏關鍵 1：將影片掛載到 DOM 中，強迫 iOS 引擎解碼
+        const container = document.getElementById('ios-video-container');
+        container.innerHTML = '';
+        container.appendChild(video);
 
-            const totalFrames = Math.floor(fps * duration);
-            addLog('convert', `擷取中 (總計 ${totalFrames} 幀)...`);
+        // 等待影片完全載入資料
+        await new Promise((resolve) => {
+            video.addEventListener('loadeddata', resolve, { once: true });
+            video.load();
+        });
 
-            for(let i=0; i < totalFrames; i++) {
-                video.currentTime = start + (i * (1/fps));
-                await new Promise(r => { video.onseeked = r; });
-                ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-                gif.addFrame(ctx, {copy: true, delay: (1000/fps)});
-                document.getElementById('fill-convert').style.width = ((i/totalFrames)*50) + '%';
-            }
-
-            addLog('convert', '編碼 GIF 中...');
-            gif.on('progress', p => {
-                document.getElementById('fill-convert').style.width = (50 + p*50) + '%';
-            });
-
-            gif.on('finished', blob => {
-                const url = URL.createObjectURL(blob);
-                finishProcess('convert', url, blob.size);
-            });
-            gif.render();
-        };
-    }
-
-    // 2. 壓縮 GIF (實作：重新抽樣與量化)
-    async function processCompress() {
-        if(!state.compressFile) return alert("請選擇 GIF 檔案");
-        const scale = parseFloat(document.getElementById('comp-scale').value);
-        const colors = parseInt(document.getElementById('comp-colors').value);
-
-        document.getElementById('prog-compress').style.display = 'block';
-        document.getElementById('log-compress').innerHTML = '';
-        addLog('compress', '解析 GIF 影格...');
-
-        const frames = await gifFrames({ url: state.compressFile, frames: 'all', outputType: 'canvas' });
-        const first = frames[0].getImage();
-        const w = first.width * scale;
-        const h = first.height * scale;
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+        canvas.width = AppState.config.width;
+        canvas.height = Math.floor(AppState.config.width * (video.videoHeight / video.videoWidth));
 
         const gif = new GIF({
-            workers: 2, quality: 30 - (colors/10), width: w, height: h, workerScript: state.workerUrl
+            workers: 2, quality: 10, width: canvas.width, height: canvas.height, workerScript: AppState.workerUrl
         });
 
-        frames.forEach((f, i) => {
-            const canvas = document.createElement('canvas');
-            canvas.width = w; canvas.height = h;
-            const ctx = canvas.getContext('2d');
-            ctx.drawImage(f.getImage(), 0, 0, w, h);
-            // 抓取原本幀延遲 (預設 100ms)
-            gif.addFrame(canvas, { copy: true, delay: 100 });
-            document.getElementById('fill-compress').style.width = ((i/frames.length)*50) + '%';
-        });
+        // 解決結尾黑屏：預留 0.2 秒緩衝，防止抓到結尾的空影格
+        const safeDuration = Math.max(0.1, Math.min(video.duration - 0.2, 8)); 
+        const totalFrames = Math.floor(safeDuration * AppState.config.fps);
 
-        addLog('compress', '重新編碼壓縮中...');
-        gif.on('progress', p => document.getElementById('fill-compress').style.width = (50 + p*50) + '%');
-        gif.on('finished', blob => finishProcess('compress', URL.createObjectURL(blob), blob.size));
-        gif.render();
-    }
-
-    // 3. 調整速度 (實作：修改 Delay Time)
-    async function processSpeed() {
-        if(!state.speedFile) return alert("請選擇 GIF 檔案");
-        const mult = parseFloat(document.getElementById('speed-val').value);
-
-        document.getElementById('prog-speed').style.display = 'block';
-        document.getElementById('log-speed').innerHTML = '';
-        addLog('speed', `解析中... 準備調整為 ${mult} 倍速`);
-
-        const frames = await gifFrames({ url: state.speedFile, frames: 'all', outputType: 'canvas' });
-        const first = frames[0].getImage();
-        const gif = new GIF({
-            workers: 2, quality: 10, width: first.width, height: first.height, workerScript: state.workerUrl
-        });
-
-        frames.forEach((f, i) => {
-            const delay = 100 / mult; // 1.0x = 100ms, 2.0x = 50ms
-            gif.addFrame(f.getImage(), { copy: true, delay: delay });
-            document.getElementById('fill-speed').style.width = ((i/frames.length)*50) + '%';
-        });
-
-        addLog('speed', '生成新速度 GIF...');
-        gif.on('progress', p => document.getElementById('fill-speed').style.width = (50 + p*50) + '%');
-        gif.on('finished', blob => finishProcess('speed', URL.createObjectURL(blob), blob.size));
-        gif.render();
-    }
-
-    function finishProcess(id, url, size) {
-        addLog(id, '處理成功！');
-        const res = document.getElementById(`res-${id}`);
-        const name = `pixel-${id}-${Date.now()}.gif`;
-        res.innerHTML = `
-            <div class="result-card">
-                <p>完成！檔案大小: ${(size/1024/1024).toFixed(2)} MB</p>
-                <img src="${url}" class="gif-preview">
-                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:5px;">
-                    <a href="${url}" download="${name}" class="btn btn-green" style="text-decoration:none; justify-content:center;">⬇ 下載</a>
-                    <button class="btn btn-yellow" onclick="sendTo('compress', '${url}')">📦 去壓縮</button>
-                    <button class="btn btn-purple" onclick="sendTo('speed', '${url}')">⚡ 調速度</button>
-                    <button class="btn btn-primary" onclick="location.reload()">↺ 重做</button>
-                </div>
-            </div>
-        `;
-        state.history.push({ url, size, name });
-    }
-
-    // 連動功能：將目前的結果發送到另一個面板
-    async function sendTo(tab, url) {
-        const resp = await fetch(url);
-        const blob = await resp.blob();
-        const file = new File([blob], "temp.gif", { type: "image/gif" });
-        
-        if(tab === 'compress') {
-            state.compressFile = file;
-            document.getElementById('info-compress').style.display = 'block';
-            document.getElementById('info-compress').innerHTML = "已從轉換結果載入 GIF";
-        } else {
-            state.speedFile = file;
-            document.getElementById('info-speed').style.display = 'block';
-            document.getElementById('info-speed').innerHTML = "已從轉換結果載入 GIF";
+        for(let i=0; i < totalFrames; i++) {
+            video.currentTime = i * (1 / AppState.config.fps);
+            
+            await new Promise(resolve => {
+                video.addEventListener('seeked', () => {
+                    // 解決黑屏關鍵 2：iOS 的 seeked 會提早觸發，必須等待 60 毫秒讓像素繪製完成
+                    setTimeout(resolve, 60);
+                }, { once: true });
+            });
+            
+            ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+            gif.addFrame(canvas, {copy: true, delay: 1000 / AppState.config.fps});
+            fill.style.width = (i / totalFrames * 50) + '%';
         }
-        switchTab(tab);
+
+        gif.on('progress', p => fill.style.width = (50 + p*50) + '%');
+        gif.on('finished', blob => {
+            renderResult('convert', blob);
+            container.innerHTML = ''; // 清理 DOM
+        });
+        gif.render();
     }
 
-    function renderHistory() {
-        const list = document.getElementById('history-list');
-        if(state.history.length === 0) return list.innerHTML = "目前沒有處理過的檔案。";
-        list.innerHTML = state.history.map(h => `
-            <div class="result-card">
-                <img src="${h.url}" style="width:100px;">
-                <p>${h.name} (${(h.size/1024/1024).toFixed(2)} MB)</p>
-                <a href="${h.url}" download="${h.name}" class="btn btn-green">下載</a>
+    // --- 壓縮 GIF ---
+    async function startCompress() {
+        if(!AppState.compress) return;
+        document.getElementById('prog-compress').style.display = 'block';
+        const fill = document.getElementById('fill-compress');
+
+        const frames = await gifFrames({ url: AppState.compress, frames: 'all', outputType: 'canvas' });
+        const { scale, colors } = AppState.config.comp;
+        const w = Math.floor(frames[0].getImage().width * scale);
+        const h = Math.floor(frames[0].getImage().height * scale);
+
+        const gif = new GIF({ workers: 2, quality: 30, width: w, height: h, workerScript: AppState.workerUrl });
+        frames.forEach((f, i) => {
+            const c = document.createElement('canvas');
+            c.width = w; c.height = h;
+            c.getContext('2d').drawImage(f.getImage(), 0, 0, w, h);
+            gif.addFrame(c, {copy: true, delay: f.frameInfo.delay * 10});
+            fill.style.width = (i/frames.length*50) + '%';
+        });
+
+        gif.on('progress', p => fill.style.width = (50 + p*50) + '%');
+        gif.on('finished', blob => renderResult('compress', blob));
+        gif.render();
+    }
+
+    // --- 速度調整 ---
+    async function startSpeed() {
+        if(!AppState.speed) return;
+        document.getElementById('prog-speed').style.display = 'block';
+        const fill = document.getElementById('fill-speed');
+
+        const frames = await gifFrames({ url: AppState.speed, frames: 'all', outputType: 'canvas' });
+        const gif = new GIF({ 
+            workers: 2, quality: 10, 
+            width: frames[0].getImage().width, 
+            height: frames[0].getImage().height, 
+            workerScript: AppState.workerUrl 
+        });
+
+        frames.forEach((f, i) => {
+            const originalDelay = f.frameInfo.delay * 10 || 100; 
+            gif.addFrame(f.getImage(), {copy: true, delay: originalDelay / AppState.config.speed});
+            fill.style.width = (i/frames.length*50) + '%';
+        });
+
+        gif.on('progress', p => fill.style.width = (50 + p*50) + '%');
+        gif.on('finished', blob => renderResult('speed', blob));
+        gif.render();
+    }
+
+    function renderResult(type, blob) {
+        const url = URL.createObjectURL(blob);
+        const container = document.getElementById(`res-${type}`);
+        container.innerHTML = `
+            <img src="${url}" class="result-img">
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-top:15px;">
+                <!-- 改用 iOS 原生 Share API -->
+                <button class="ios-btn success" onclick="shareToiOS('${url}', 'PixelStudio_${Date.now()}.gif')">儲存至相簿</button>
+                <button class="ios-btn secondary" onclick="location.reload()">重新開始</button>
             </div>
-        `).join('');
+            ${type === 'convert' ? `<button class="ios-btn secondary" style="margin-top:10px;" onclick="transferTo('compress', '${url}')">發送到壓縮</button>` : ''}
+        `;
+        document.getElementById(`prog-${type}`).style.display = 'none';
+    }
+
+    async function transferTo(tab, url) {
+        const blob = await fetch(url).then(r => r.blob());
+        AppState[tab] = new File([blob], "transfer.gif", {type:"image/gif"});
+        document.getElementById(`name-${tab}`).textContent = "已從轉換結果載入";
+        switchTab(tab, document.querySelectorAll('.tab-item')[tab==='compress'?1:2]);
+    }
+
+    // --- 【重大修正】iOS 原生儲存功能 ---
+    async function shareToiOS(url, filename) {
+        try {
+            const blob = await fetch(url).then(r => r.blob());
+            const file = new File([blob], filename, { type: 'image/gif' });
+            
+            // 如果設備支援原生 Share Sheet (iOS 最佳做法)
+            if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
+                await navigator.share({
+                    files: [file],
+                    title: 'PixelStudio GIF',
+                });
+            } else {
+                // 降級方案
+                const a = document.createElement('a');
+                a.href = url; 
+                a.download = filename;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+            }
+        } catch (err) {
+            console.log('分享/儲存被取消或失敗', err);
+        }
     }
 </script>
 
