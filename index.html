@@ -5,19 +5,23 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="PixelStudio">
-    <title>Pixel Studio - iOS Edition</title>
+    <meta name="apple-mobile-web-app-title" content="ValhallaForge">
+    <title>Valhalla Forge - Runic GIF Studio</title>
     
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=SF+Pro+Display:wght@400;600&family=Press+Start+2P&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700&family=Noto+Serif+TC:wght@400;700&display=swap');
 
         :root {
-            --ios-bg: #000000;
-            --ios-card: rgba(28, 28, 30, 0.8);
-            --ios-accent: #0A84FF;
-            --ios-green: #30D158;
-            --ios-red: #FF453A;
-            --ios-yellow: #FFD60A;
+            /* 北歐神話色系 */
+            --rune-bg: #0b0f12; /* 深淵黑 */
+            --rune-card: rgba(22, 26, 30, 0.85); /* 黑曜石 */
+            --rune-gold: #d4af37; /* 神域金 */
+            --rune-gold-glow: rgba(212, 175, 55, 0.4);
+            --rune-ice: #88c0d0; /* 寒冰藍 */
+            --rune-text: #eae0c8; /* 羊皮紙白 */
+            --rune-muted: #5b657a; /* 褪色石灰 */
+            --rune-red: #8b0000; /* 戰神暗紅 */
+            
             --safe-top: env(safe-area-inset-top, 44px);
             --safe-bottom: env(safe-area-inset-bottom, 34px);
         }
@@ -30,37 +34,55 @@
 
         body {
             margin: 0;
-            background-color: var(--ios-bg);
-            color: #fff;
-            font-family: -apple-system, 'SF Pro Display', sans-serif;
+            background-color: var(--rune-bg);
+            color: var(--rune-text);
+            font-family: 'Noto Serif TC', serif;
             overflow: hidden; 
             height: 100vh;
             display: flex;
             flex-direction: column;
         }
 
+        /* 神秘背景：符文法陣的微光感 */
         .app-background {
             position: fixed;
             top: 0; left: 0; right: 0; bottom: 0;
-            background: linear-gradient(125deg, #1a1a2e 0%, #000 100%);
+            background: radial-gradient(circle at 50% 30%, #1a2430 0%, #050709 100%);
             z-index: -1;
+        }
+        
+        .app-background::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background-image: repeating-linear-gradient(45deg, rgba(212, 175, 55, 0.02) 0px, rgba(212, 175, 55, 0.02) 2px, transparent 2px, transparent 10px);
+            opacity: 0.5;
         }
 
         .header {
-            padding-top: calc(var(--safe-top) + 10px);
+            padding-top: calc(var(--safe-top) + 15px);
             padding-bottom: 15px;
             text-align: center;
-            backdrop-filter: blur(20px);
-            background: rgba(0,0,0,0.5);
-            border-bottom: 0.5px solid rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            background: linear-gradient(to bottom, rgba(0,0,0,0.8), transparent);
+            border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.5);
         }
 
         .header h1 {
-            font-family: 'Press Start 2P', cursive;
-            font-size: 14px;
+            font-family: 'Cinzel Decorative', cursive;
+            font-size: 20px;
             margin: 0;
-            color: var(--ios-accent);
-            letter-spacing: 1px;
+            color: var(--rune-gold);
+            letter-spacing: 3px;
+            text-shadow: 0 0 10px var(--rune-gold-glow);
+        }
+        
+        .header .subtitle {
+            font-size: 10px;
+            color: var(--rune-muted);
+            letter-spacing: 4px;
+            margin-top: 4px;
         }
 
         .main-content {
@@ -72,108 +94,161 @@
         }
 
         .card {
-            background: var(--ios-card);
+            background: var(--rune-card);
             backdrop-filter: blur(15px);
-            border-radius: 20px;
+            border-radius: 8px;
             padding: 20px;
             margin-bottom: 20px;
-            border: 0.5px solid rgba(255,255,255,0.1);
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            box-shadow: 0 8px 30px rgba(0,0,0,0.6), inset 0 0 20px rgba(0,0,0,0.5);
         }
 
         .section-title {
-            font-size: 12px;
-            font-family: 'Press Start 2P';
-            color: var(--ios-yellow);
+            font-family: 'Cinzel Decorative', cursive;
+            font-size: 14px;
+            color: var(--rune-ice);
             margin-bottom: 15px;
-            display: block;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            letter-spacing: 2px;
+            text-shadow: 0 0 8px rgba(136, 192, 208, 0.5);
         }
 
         .upload-area {
-            border: 2px dashed rgba(255,255,255,0.2);
-            border-radius: 15px;
+            border: 1px solid var(--rune-gold);
+            background: rgba(212, 175, 55, 0.05);
+            border-radius: 4px;
             height: 120px;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             position: relative;
+            transition: all 0.3s ease;
         }
+
+        .upload-area::before, .upload-area::after {
+            content: "᛭";
+            position: absolute;
+            color: var(--rune-gold);
+            font-size: 10px;
+            opacity: 0.5;
+        }
+        .upload-area::before { top: 4px; left: 4px; }
+        .upload-area::after { bottom: 4px; right: 4px; }
 
         .upload-area input {
             position: absolute;
             width: 100%; height: 100%;
             opacity: 0;
+            z-index: 2;
         }
 
-        .upload-icon { font-size: 32px; margin-bottom: 8px; }
+        .upload-icon { 
+            font-family: serif; 
+            font-size: 40px; 
+            color: var(--rune-gold); 
+            margin-bottom: 8px;
+            text-shadow: 0 0 15px var(--rune-gold-glow);
+        }
 
-        .ios-btn {
-            background: var(--ios-accent);
-            color: white;
-            border: none;
-            border-radius: 12px;
+        .rune-btn {
+            background: transparent;
+            color: var(--rune-gold);
+            border: 1px solid var(--rune-gold);
+            border-radius: 4px;
             padding: 14px;
-            font-size: 16px;
-            font-weight: 600;
+            font-size: 15px;
+            font-family: 'Noto Serif TC', serif;
+            font-weight: 700;
+            letter-spacing: 2px;
             width: 100%;
-            margin-top: 10px;
+            margin-top: 15px;
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 8px;
-            transition: transform 0.1s;
+            transition: all 0.2s;
+            position: relative;
+            overflow: hidden;
         }
 
-        .ios-btn:active { transform: scale(0.96); opacity: 0.8; }
-        .ios-btn.secondary { background: #323235; }
-        .ios-btn.success { background: var(--ios-green); color: #000; }
+        .rune-btn::before {
+            content: '';
+            position: absolute;
+            top: 0; left: -100%;
+            width: 100%; height: 100%;
+            background: linear-gradient(90deg, transparent, var(--rune-gold-glow), transparent);
+            transition: left 0.5s;
+        }
 
-        .input-group { margin-top: 15px; }
-        .label-row { display: flex; justify-content: space-between; font-size: 14px; margin-bottom: 8px; color: #8e8e93; }
+        .rune-btn:active::before { left: 100%; }
+        .rune-btn:active { background: rgba(212, 175, 55, 0.2); transform: scale(0.98); }
+        
+        .rune-btn.primary { background: rgba(212, 175, 55, 0.15); box-shadow: 0 0 10px var(--rune-gold-glow); }
+        .rune-btn.success { color: var(--rune-ice); border-color: var(--rune-ice); background: rgba(136, 192, 208, 0.1); }
+        .rune-btn.danger { color: var(--rune-text); border-color: var(--rune-muted); }
+
+        .input-group { margin-top: 18px; }
+        .label-row { display: flex; justify-content: space-between; font-size: 13px; margin-bottom: 10px; color: var(--rune-text); letter-spacing: 1px; }
         
         input[type="range"] {
             -webkit-appearance: none;
             width: 100%;
-            height: 6px;
-            background: #3a3a3c;
-            border-radius: 3px;
+            height: 2px;
+            background: var(--rune-muted);
+            position: relative;
         }
 
         input[type="range"]::-webkit-slider-thumb {
             -webkit-appearance: none;
-            width: 24px; height: 24px;
-            background: #fff;
-            border-radius: 50%;
-            box-shadow: 0 3px 8px rgba(0,0,0,0.3);
+            width: 18px; height: 18px;
+            background: var(--rune-bg);
+            border: 2px solid var(--rune-gold);
+            transform: rotate(45deg); /* 菱形滑塊 */
+            box-shadow: 0 0 8px var(--rune-gold-glow);
+            cursor: pointer;
         }
 
         .speed-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 8px;
+            gap: 10px;
             margin-bottom: 15px;
         }
 
         .speed-chip {
-            background: #2c2c2e;
-            border-radius: 10px;
+            background: rgba(0,0,0,0.5);
+            border: 1px solid var(--rune-muted);
+            border-radius: 4px;
             padding: 12px;
             text-align: center;
-            font-weight: 600;
+            font-family: 'Cinzel Decorative', cursive;
+            font-weight: 700;
+            color: var(--rune-muted);
+            transition: all 0.3s;
+            font-size: 14px;
         }
 
-        .speed-chip.active { background: var(--ios-accent); }
+        .speed-chip.active { 
+            border-color: var(--rune-ice); 
+            color: var(--rune-ice);
+            background: rgba(136, 192, 208, 0.15);
+            text-shadow: 0 0 8px rgba(136, 192, 208, 0.6);
+            box-shadow: inset 0 0 10px rgba(136, 192, 208, 0.2);
+        }
 
         .tab-bar {
             position: fixed;
             bottom: 0; left: 0; right: 0;
             height: calc(var(--safe-bottom) + 65px);
-            background: rgba(20, 20, 20, 0.94);
+            background: rgba(10, 12, 15, 0.95);
             backdrop-filter: blur(20px);
             display: flex;
             justify-content: space-around;
             padding-top: 10px;
-            border-top: 0.5px solid rgba(255,255,255,0.1);
+            border-top: 1px solid rgba(212, 175, 55, 0.3);
             z-index: 100;
         }
 
@@ -181,70 +256,88 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            color: #8e8e93;
-            font-size: 10px;
-            gap: 4px;
+            color: var(--rune-muted);
+            font-size: 11px;
+            gap: 6px;
+            letter-spacing: 1px;
+            transition: color 0.3s;
         }
 
-        .tab-item.active { color: var(--ios-accent); }
-        .tab-icon { font-size: 24px; }
-
-        .progress-box { margin-top: 15px; display: none; }
-        .bar-bg { background: #3a3a3c; height: 8px; border-radius: 4px; overflow: hidden; margin-top: 8px; }
-        .bar-fill { background: var(--ios-accent); height: 100%; width: 0%; transition: width 0.2s; }
+        .tab-item.active { 
+            color: var(--rune-gold); 
+            text-shadow: 0 0 8px var(--rune-gold-glow);
+        }
         
-        .result-img { width: 100%; border-radius: 12px; margin-top: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        .tab-icon { font-family: serif; font-size: 22px; }
 
-        .page { display: none; }
+        .progress-box { margin-top: 20px; display: none; }
+        .bar-bg { background: rgba(0,0,0,0.5); border: 1px solid var(--rune-muted); height: 6px; margin-top: 10px; position: relative; }
+        .bar-fill { 
+            background: var(--rune-gold); 
+            height: 100%; width: 0%; 
+            transition: width 0.2s; 
+            box-shadow: 0 0 10px var(--rune-gold);
+        }
+        
+        .result-img { 
+            width: 100%; 
+            border-radius: 4px; 
+            margin-top: 15px; 
+            border: 2px solid var(--rune-gold);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.8); 
+        }
+
+        .page { display: none; animation: fadeIn 0.4s ease forwards; }
         .page.active { display: block; }
         
-        /* 隱藏的影片區塊（為了騙過 iOS） */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
         #ios-video-container {
             position: absolute;
-            top: -9999px;
-            left: -9999px;
-            opacity: 0;
-            pointer-events: none;
+            top: -9999px; left: -9999px;
+            opacity: 0; pointer-events: none;
         }
     </style>
 </head>
 <body>
 
 <div class="app-background"></div>
-
-<!-- 必須放在 DOM 裡 iOS 才會乖乖解碼影片 -->
 <div id="ios-video-container"></div>
 
 <header class="header">
-    <h1>PIXEL STUDIO</h1>
+    <h1>VALHALLA FORGE</h1>
+    <div class="subtitle">RUNIC GIF ARTIFACTS</div>
 </header>
 
 <main class="main-content">
     
-    <!-- 轉換頁 -->
+    <!-- 轉換頁 (ᛟ Odal: Heritage/Estate) -->
     <div id="page-convert" class="page active">
         <div class="card">
-            <span class="section-title">VIDEO TO GIF</span>
+            <span class="section-title"><span style="font-size:18px;">ᛟ</span> 影像鎔鑄爐</span>
             <div class="upload-area">
                 <input type="file" accept="video/*" onchange="loadMedia(this, 'video')">
-                <span class="upload-icon">🎞️</span>
-                <span style="font-size:14px; color:#8e8e93" id="name-video">選擇影片檔案</span>
+                <span class="upload-icon">ᛟ</span>
+                <span style="font-size:13px; color:var(--rune-muted); letter-spacing:1px;" id="name-video">獻上凡界影像 (選擇影片)</span>
             </div>
             
             <div class="input-group">
-                <div class="label-row"><span>解析度</span><span id="val-width">320px</span></div>
+                <div class="label-row"><span>法陣尺度 (解析度)</span><span id="val-width" style="color:var(--rune-gold)">320px</span></div>
                 <input type="range" min="160" max="640" step="20" value="320" oninput="updateVal('width', this.value)">
             </div>
 
             <div class="input-group">
-                <div class="label-row"><span>FPS</span><span id="val-fps">12</span></div>
+                <div class="label-row"><span>時之流速 (FPS)</span><span id="val-fps" style="color:var(--rune-gold)">12</span></div>
                 <input type="range" min="5" max="30" value="12" oninput="updateVal('fps', this.value)">
             </div>
 
-            <button class="ios-btn" onclick="startConvert()">開始處理</button>
+            <button class="rune-btn primary" onclick="startConvert()">注入奧丁神力 (開始轉換)</button>
             
             <div id="prog-convert" class="progress-box">
-                <div class="label-row"><span id="log-convert">準備中...</span></div>
+                <div class="label-row"><span id="log-convert">凝聚魔力中...</span></div>
                 <div class="bar-bg"><div id="fill-convert" class="bar-fill"></div></div>
             </div>
 
@@ -252,56 +345,56 @@
         </div>
     </div>
 
-    <!-- 壓縮頁 -->
+    <!-- 壓縮頁 (ᛒ Berkanan: Birch/Birth) -->
     <div id="page-compress" class="page">
         <div class="card">
-            <span class="section-title">COMPRESSOR</span>
+            <span class="section-title"><span style="font-size:18px;">ᛒ</span> 封印壓縮陣</span>
             <div class="upload-area">
                 <input type="file" accept="image/gif" id="input-compress" onchange="loadMedia(this, 'compress')">
-                <span class="upload-icon">📦</span>
-                <span style="font-size:14px; color:#8e8e93" id="name-compress">選擇要壓縮的 GIF</span>
+                <span class="upload-icon">ᛒ</span>
+                <span style="font-size:13px; color:var(--rune-muted); letter-spacing:1px;" id="name-compress">置入待封印的法器 (GIF)</span>
             </div>
             
             <div class="input-group">
-                <div class="label-row"><span>壓縮強度</span></div>
+                <div class="label-row"><span>封印強度 (壓縮率)</span></div>
                 <div class="speed-grid">
-                    <div class="speed-chip active" onclick="setComp(0.5, 64, this)">中等</div>
-                    <div class="speed-chip" onclick="setComp(0.3, 32, this)">極限</div>
-                    <div class="speed-chip" onclick="setComp(0.8, 128, this)">輕微</div>
+                    <div class="speed-chip active" onclick="setComp(0.5, 64, this)">中階封印</div>
+                    <div class="speed-chip" onclick="setComp(0.3, 32, this)">極限禁咒</div>
+                    <div class="speed-chip" onclick="setComp(0.8, 128, this)">輕微加護</div>
                 </div>
             </div>
 
-            <button class="ios-btn" style="background:var(--ios-yellow); color:#000;" onclick="startCompress()">執行壓縮</button>
+            <button class="rune-btn" style="border-color:var(--rune-ice); color:var(--rune-ice);" onclick="startCompress()">啟動結界 (執行壓縮)</button>
             <div id="prog-compress" class="progress-box">
-                <div class="bar-bg"><div id="fill-compress" class="bar-fill"></div></div>
+                <div class="bar-bg"><div id="fill-compress" class="bar-fill" style="background:var(--rune-ice); box-shadow:0 0 10px var(--rune-ice);"></div></div>
             </div>
             <div id="res-compress"></div>
         </div>
     </div>
 
-    <!-- 速度頁 -->
+    <!-- 速度頁 (ᛋ Sowilo: Sun/Lightning) -->
     <div id="page-speed" class="page">
         <div class="card">
-            <span class="section-title">SPEED TUNER</span>
+            <span class="section-title"><span style="font-size:18px;">ᛋ</span> 時空扭曲儀</span>
             <div class="upload-area">
                 <input type="file" accept="image/gif" id="input-speed" onchange="loadMedia(this, 'speed')">
-                <span class="upload-icon">⚡</span>
-                <span style="font-size:14px; color:#8e8e93" id="name-speed">選擇 GIF 調整速度</span>
+                <span class="upload-icon">ᛋ</span>
+                <span style="font-size:13px; color:var(--rune-muted); letter-spacing:1px;" id="name-speed">置入需扭曲時間之物</span>
             </div>
 
             <div class="input-group">
-                <div class="label-row"><span>預設倍率 (最高優先)</span></div>
+                <div class="label-row"><span>時間法則 (最高倍率優先)</span></div>
                 <div class="speed-grid">
-                    <!-- 依照您的要求：最高倍率排在列表最頂端 -->
-                    <div class="speed-chip" onclick="setSpd(4, this)">4.0x</div>
-                    <div class="speed-chip" onclick="setSpd(2, this)">2.0x</div>
-                    <div class="speed-chip active" onclick="setSpd(1, this)">1.0x</div>
-                    <div class="speed-chip" onclick="setSpd(0.5, this)">0.5x</div>
-                    <div class="speed-chip" onclick="setSpd(0.25, this)">0.25x</div>
+                    <!-- 最高倍率 4.0x 在最頂端 -->
+                    <div class="speed-chip" onclick="setSpd(4, this)">4.0x 迅雷</div>
+                    <div class="speed-chip" onclick="setSpd(2, this)">2.0x 疾風</div>
+                    <div class="speed-chip active" onclick="setSpd(1, this)">1.0x 現世</div>
+                    <div class="speed-chip" onclick="setSpd(0.5, this)">0.5x 泥沼</div>
+                    <div class="speed-chip" onclick="setSpd(0.25, this)">0.25x 永劫</div>
                 </div>
             </div>
 
-            <button class="ios-btn" style="background:var(--ios-green); color:#000;" onclick="startSpeed()">調整速度</button>
+            <button class="rune-btn" style="border-color:var(--rune-gold); color:var(--rune-gold);" onclick="startSpeed()">干涉時間軸 (調整速度)</button>
             <div id="prog-speed" class="progress-box">
                 <div class="bar-bg"><div id="fill-speed" class="bar-fill"></div></div>
             </div>
@@ -313,35 +406,33 @@
 
 <nav class="tab-bar">
     <div class="tab-item active" onclick="switchTab('convert', this)">
-        <span class="tab-icon">🎬</span>
-        <span>轉換</span>
+        <span class="tab-icon">ᛟ</span>
+        <span>鎔鑄 (Convert)</span>
     </div>
     <div class="tab-item" onclick="switchTab('compress', this)">
-        <span class="tab-icon">📦</span>
-        <span>壓縮</span>
+        <span class="tab-icon">ᛒ</span>
+        <span>封印 (Compress)</span>
     </div>
     <div class="tab-item" onclick="switchTab('speed', this)">
-        <span class="tab-icon">⚡</span>
-        <span>速度</span>
+        <span class="tab-icon">ᛋ</span>
+        <span>時空 (Speed)</span>
     </div>
 </nav>
 
-<!-- 核心庫 -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gif.js/0.2.0/gif.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/gif-frames@1.0.1/dist/gif-frames.min.js"></script>
 
 <script>
     const AppState = {
-        video: null,
-        compress: null,
-        speed: null,
-        workerUrl: '',
+        video: null, compress: null, speed: null, workerUrl: '',
         config: { width: 320, fps: 12, comp: { scale: 0.5, colors: 64 }, speed: 1.0 }
     };
 
     (async () => {
-        const resp = await fetch('https://cdnjs.cloudflare.com/ajax/libs/gif.js/0.2.0/gif.worker.js');
-        AppState.workerUrl = URL.createObjectURL(await resp.blob());
+        try {
+            const resp = await fetch('https://cdnjs.cloudflare.com/ajax/libs/gif.js/0.2.0/gif.worker.js');
+            AppState.workerUrl = URL.createObjectURL(await resp.blob());
+        } catch(e) { console.error("符文核心載入失敗", e); }
     })();
 
     function switchTab(p, el) {
@@ -372,11 +463,11 @@
         const file = input.files[0];
         if(!file) return;
         AppState[type] = file;
-        document.getElementById(`name-${type}`).textContent = file.name;
-        document.getElementById(`name-${type}`).style.color = 'var(--ios-accent)';
+        document.getElementById(`name-${type}`).textContent = "📜 " + file.name;
+        document.getElementById(`name-${type}`).style.color = type === 'compress' ? 'var(--rune-ice)' : 'var(--rune-gold)';
     }
 
-    // --- 【重大修正】影片轉 GIF (修復所有黑畫面問題) ---
+    // --- 影片轉 GIF ---
     async function startConvert() {
         if(!AppState.video) return;
         const prog = document.getElementById('prog-convert');
@@ -386,15 +477,13 @@
         const video = document.createElement('video');
         video.src = URL.createObjectURL(AppState.video);
         video.muted = true;
-        video.playsInline = true; // iOS 強制要求
+        video.playsInline = true;
         video.setAttribute('playsinline', '');
 
-        // 解決黑屏關鍵 1：將影片掛載到 DOM 中，強迫 iOS 引擎解碼
         const container = document.getElementById('ios-video-container');
         container.innerHTML = '';
         container.appendChild(video);
 
-        // 等待影片完全載入資料
         await new Promise((resolve) => {
             video.addEventListener('loadeddata', resolve, { once: true });
             video.load();
@@ -405,34 +494,22 @@
         canvas.width = AppState.config.width;
         canvas.height = Math.floor(AppState.config.width * (video.videoHeight / video.videoWidth));
 
-        const gif = new GIF({
-            workers: 2, quality: 10, width: canvas.width, height: canvas.height, workerScript: AppState.workerUrl
-        });
-
-        // 解決結尾黑屏：預留 0.2 秒緩衝，防止抓到結尾的空影格
+        const gif = new GIF({ workers: 2, quality: 10, width: canvas.width, height: canvas.height, workerScript: AppState.workerUrl });
         const safeDuration = Math.max(0.1, Math.min(video.duration - 0.2, 8)); 
         const totalFrames = Math.floor(safeDuration * AppState.config.fps);
 
         for(let i=0; i < totalFrames; i++) {
             video.currentTime = i * (1 / AppState.config.fps);
-            
             await new Promise(resolve => {
-                video.addEventListener('seeked', () => {
-                    // 解決黑屏關鍵 2：iOS 的 seeked 會提早觸發，必須等待 60 毫秒讓像素繪製完成
-                    setTimeout(resolve, 60);
-                }, { once: true });
+                video.addEventListener('seeked', () => setTimeout(resolve, 60), { once: true });
             });
-            
             ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
             gif.addFrame(canvas, {copy: true, delay: 1000 / AppState.config.fps});
             fill.style.width = (i / totalFrames * 50) + '%';
         }
 
         gif.on('progress', p => fill.style.width = (50 + p*50) + '%');
-        gif.on('finished', blob => {
-            renderResult('convert', blob);
-            container.innerHTML = ''; // 清理 DOM
-        });
+        gif.on('finished', blob => { renderResult('convert', blob); container.innerHTML = ''; });
         gif.render();
     }
 
@@ -468,12 +545,7 @@
         const fill = document.getElementById('fill-speed');
 
         const frames = await gifFrames({ url: AppState.speed, frames: 'all', outputType: 'canvas' });
-        const gif = new GIF({ 
-            workers: 2, quality: 10, 
-            width: frames[0].getImage().width, 
-            height: frames[0].getImage().height, 
-            workerScript: AppState.workerUrl 
-        });
+        const gif = new GIF({ workers: 2, quality: 10, width: frames[0].getImage().width, height: frames[0].getImage().height, workerScript: AppState.workerUrl });
 
         frames.forEach((f, i) => {
             const originalDelay = f.frameInfo.delay * 10 || 100; 
@@ -492,46 +564,35 @@
         container.innerHTML = `
             <img src="${url}" class="result-img">
             <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-top:15px;">
-                <!-- 改用 iOS 原生 Share API -->
-                <button class="ios-btn success" onclick="shareToiOS('${url}', 'PixelStudio_${Date.now()}.gif')">儲存至相簿</button>
-                <button class="ios-btn secondary" onclick="location.reload()">重新開始</button>
+                <button class="rune-btn success" onclick="shareToiOS('${url}', 'Valhalla_Artifact_${Date.now()}.gif')">銘刻至相簿</button>
+                <button class="rune-btn danger" onclick="location.reload()">消散重鑄</button>
             </div>
-            ${type === 'convert' ? `<button class="ios-btn secondary" style="margin-top:10px;" onclick="transferTo('compress', '${url}')">發送到壓縮</button>` : ''}
+            ${type === 'convert' ? `<button class="rune-btn" style="margin-top:10px;" onclick="transferTo('compress', '${url}')">傳送至封印陣 (去壓縮)</button>` : ''}
         `;
         document.getElementById(`prog-${type}`).style.display = 'none';
     }
 
     async function transferTo(tab, url) {
         const blob = await fetch(url).then(r => r.blob());
-        AppState[tab] = new File([blob], "transfer.gif", {type:"image/gif"});
-        document.getElementById(`name-${tab}`).textContent = "已從轉換結果載入";
+        AppState[tab] = new File([blob], "runic_transfer.gif", {type:"image/gif"});
+        document.getElementById(`name-${tab}`).textContent = "✨ 符文殘片已傳送";
+        document.getElementById(`name-${tab}`).style.color = "var(--rune-ice)";
         switchTab(tab, document.querySelectorAll('.tab-item')[tab==='compress'?1:2]);
     }
 
-    // --- 【重大修正】iOS 原生儲存功能 ---
     async function shareToiOS(url, filename) {
         try {
             const blob = await fetch(url).then(r => r.blob());
             const file = new File([blob], filename, { type: 'image/gif' });
             
-            // 如果設備支援原生 Share Sheet (iOS 最佳做法)
             if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
-                await navigator.share({
-                    files: [file],
-                    title: 'PixelStudio GIF',
-                });
+                await navigator.share({ files: [file], title: 'Valhalla Forge GIF' });
             } else {
-                // 降級方案
                 const a = document.createElement('a');
-                a.href = url; 
-                a.download = filename;
-                document.body.appendChild(a);
-                a.click();
-                document.body.removeChild(a);
+                a.href = url; a.download = filename;
+                document.body.appendChild(a); a.click(); document.body.removeChild(a);
             }
-        } catch (err) {
-            console.log('分享/儲存被取消或失敗', err);
-        }
+        } catch (err) { console.log('儀式中斷', err); }
     }
 </script>
 
