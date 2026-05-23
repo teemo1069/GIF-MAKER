@@ -1,4 +1,3 @@
-```html
 <!DOCTYPE html>
 <html lang="zh-TW">
 <head>
@@ -6,19 +5,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="ValhallaForge">
-    <title>Valhalla Forge - Long Runic GIF Studio</title>
+    <title>Valhalla Forge - Psychedelic Forest HD</title>
     
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700&family=Noto+Serif+TC:wght@400;700&display=swap');
 
         :root {
-            --rune-bg: #0b0f12; 
-            --rune-gold: #d4af37; 
-            --rune-gold-glow: rgba(212, 175, 55, 0.4);
-            --rune-ice: #88c0d0; 
-            --rune-text: #eae0c8; 
-            --rune-muted: #5b657a; 
+            /* 森林迷幻主題色系 */
+            --rune-bg: #050a07; 
+            --rune-gold: #c6ff00; /* 螢光綠 */
+            --rune-gold-glow: rgba(198, 255, 0, 0.4);
+            --rune-ice: #00ffff;  /* 螢光青 */
+            --psy-pink: #ff00ff;  /* 迷幻紫粉 */
+            --rune-text: #e0f2e9; 
             --safe-top: env(safe-area-inset-top, 44px);
             --safe-bottom: env(safe-area-inset-bottom, 34px);
         }
@@ -32,24 +31,46 @@
         }
 
         .app-background {
-            position: fixed; inset: 0;
-            background-image: url('https://images.unsplash.com/photo-1531366936337-7784f64f1dc8?q=80&w=1080&auto=format&fit=crop');
-            background-size: cover; background-position: center; z-index: -1;
+            position: fixed; inset: -5%; width: 110%; height: 110%;
+            background-image: url('https://images.unsplash.com/photo-1511497584788-876760111969?q=80&w=1080&auto=format&fit=crop');
+            background-size: cover; background-position: center; z-index: -2;
+            animation: breathe 20s infinite alternate ease-in-out;
         }
         .app-background::before {
             content: ""; position: absolute; inset: 0;
-            background: radial-gradient(circle at 50% 30%, rgba(11, 15, 18, 0.2) 0%, rgba(5, 7, 9, 0.85) 100%);
+            background: radial-gradient(circle at 50% 30%, rgba(5, 15, 10, 0.4) 0%, rgba(2, 5, 3, 0.95) 100%);
+        }
+
+        /* 使用 transform 確保高幀率不卡頓 */
+        @keyframes breathe {
+            0% { transform: scale(1); }
+            100% { transform: scale(1.05); }
+        }
+
+        .firefly-layer {
+            position: fixed; inset: 0; z-index: -1; pointer-events: none; overflow: hidden;
+        }
+        .firefly {
+            position: absolute; width: 3px; height: 3px; background: var(--rune-gold); border-radius: 50%;
+            box-shadow: 0 0 10px 2px var(--rune-gold), 0 0 20px 5px var(--rune-gold-glow);
+            animation: drift linear infinite; opacity: 0;
+        }
+        @keyframes drift {
+            0% { transform: translateY(100vh) translateX(0) scale(0); opacity: 0; }
+            20% { opacity: 0.8; transform: translateY(80vh) translateX(20px) scale(1); }
+            80% { opacity: 0.8; transform: translateY(20vh) translateX(-20px) scale(1.5); }
+            100% { transform: translateY(-10vh) translateX(0) scale(0); opacity: 0; }
         }
 
         .header {
             padding-top: calc(var(--safe-top) + 15px); padding-bottom: 15px; text-align: center;
-            backdrop-filter: blur(20px) saturate(120%); -webkit-backdrop-filter: blur(20px) saturate(120%);
-            background: linear-gradient(to bottom, rgba(0,0,0,0.6), rgba(0,0,0,0.1));
-            border-bottom: 1px solid rgba(212, 175, 55, 0.15);
+            backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
+            background: linear-gradient(to bottom, rgba(0,0,0,0.6), rgba(0,0,0,0));
+            border-bottom: 1px solid rgba(198, 255, 0, 0.15);
         }
 
         .header h1 {
-            font-family: 'Cinzel Decorative', cursive; font-size: 22px; margin: 0;
+            font-family: 'Cinzel Decorative', cursive; font-size: 20px; margin: 0;
             color: var(--rune-gold); letter-spacing: 3px; text-shadow: 0 0 15px var(--rune-gold-glow);
         }
 
@@ -59,179 +80,431 @@
         }
 
         .card {
-            background: rgba(15, 20, 25, 0.25); backdrop-filter: blur(25px) saturate(150%);
-            -webkit-backdrop-filter: blur(25px) saturate(150%); border-radius: 24px;
-            padding: 24px 20px; margin-bottom: 20px; border: 1px solid rgba(212, 175, 55, 0.15);
-            box-shadow: 0 15px 35px rgba(0,0,0,0.4);
+            background: rgba(10, 20, 15, 0.4); backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px); border-radius: 24px;
+            padding: 24px 20px; margin-bottom: 20px; 
+            border: 1px solid rgba(198, 255, 0, 0.2);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.5), inset 0 0 20px rgba(198, 255, 0, 0.05);
         }
 
         .section-title {
             font-family: 'Cinzel Decorative', cursive; font-size: 15px; color: var(--rune-ice);
             margin-bottom: 18px; display: flex; align-items: center; gap: 10px;
+            text-shadow: 0 0 10px rgba(0, 255, 255, 0.4);
         }
 
         .upload-area {
-            border: 2px dashed rgba(212, 175, 55, 0.3); background: rgba(212, 175, 55, 0.03);
-            border-radius: 18px; height: 120px; display: flex; flex-direction: column;
+            border: 2px dashed rgba(198, 255, 0, 0.4); background: rgba(198, 255, 0, 0.05);
+            border-radius: 18px; height: 100px; display: flex; flex-direction: column;
             align-items: center; justify-content: center; position: relative;
+            transition: all 0.3s;
         }
-
+        .upload-area:active { background: rgba(198, 255, 0, 0.1); }
         .upload-area input { position: absolute; inset: 0; opacity: 0; z-index: 2; }
 
         .rune-btn {
-            background: rgba(25, 30, 35, 0.4); color: var(--rune-gold); border-radius: 20px;
-            padding: 16px; font-size: 16px; font-weight: 700; width: 100%; margin-top: 15px;
+            background: rgba(20, 30, 25, 0.6); color: var(--rune-gold); border-radius: 20px;
+            padding: 16px; font-size: 15px; font-weight: 700; width: 100%; margin-top: 12px;
             display: flex; align-items: center; justify-content: center; gap: 8px;
-            border: 1px solid rgba(212, 175, 55, 0.4); border-top: 1px solid rgba(255, 255, 255, 0.2);
-            backdrop-filter: blur(12px); box-shadow: 0 8px 20px rgba(0,0,0,0.3);
-            transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            border: 1px solid rgba(198, 255, 0, 0.4); 
+            backdrop-filter: blur(12px); box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+            transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.2s;
         }
-        .rune-btn:active { transform: scale(0.92); }
-        .rune-btn.primary { background: rgba(212, 175, 55, 0.25); color: #fff; }
+        .rune-btn:active { transform: scale(0.95); }
+        .rune-btn.primary { background: rgba(198, 255, 0, 0.2); color: #fff; text-shadow: 0 0 5px var(--rune-gold); }
+        .rune-btn.transfer-trim { background: rgba(0, 255, 255, 0.15); color: var(--rune-ice); border-color: var(--rune-ice); }
+        .rune-btn.transfer-speed { background: rgba(255, 0, 255, 0.15); color: var(--psy-pink); border-color: var(--psy-pink); }
 
-        .input-group { margin-top: 18px; }
-        .label-row { display: flex; justify-content: space-between; font-size: 13px; margin-bottom: 8px; }
+        .input-group { margin-top: 15px; }
+        .label-row { display: flex; justify-content: space-between; font-size: 13px; margin-bottom: 8px; color: rgba(255,255,255,0.8); }
         
         input[type="range"] {
-            -webkit-appearance: none; width: 100%; height: 4px; background: rgba(255,255,255,0.1);
+            -webkit-appearance: none; width: 100%; height: 4px; background: rgba(255,255,255,0.2); border-radius: 2px;
         }
         input[type="range"]::-webkit-slider-thumb {
-            -webkit-appearance: none; width: 20px; height: 20px; border-radius: 50%;
-            background: #fff; border: 2px solid var(--rune-gold);
+            -webkit-appearance: none; width: 22px; height: 22px; border-radius: 50%;
+            background: #111; border: 2px solid var(--rune-gold); box-shadow: 0 0 10px var(--rune-gold-glow);
         }
 
         .speed-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
         .speed-chip {
-            background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1);
+            background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.15);
             border-radius: 12px; padding: 12px 5px; text-align: center; color: rgba(255,255,255,0.6);
-            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1); font-size: 13px;
         }
-        .speed-chip.active { background: rgba(136, 192, 208, 0.25); border-color: var(--rune-ice); color: #fff; }
+        .speed-chip.active { background: rgba(198, 255, 0, 0.2); border-color: var(--rune-gold); color: #fff; box-shadow: 0 0 10px rgba(198, 255, 0, 0.2); }
+        #page-trim .speed-chip.active { background: rgba(0, 255, 255, 0.2); border-color: var(--rune-ice); box-shadow: 0 0 10px rgba(0, 255, 255, 0.2); }
+        #page-speed .speed-chip.active { background: rgba(255, 0, 255, 0.2); border-color: var(--psy-pink); box-shadow: 0 0 10px rgba(255, 0, 255, 0.2); }
+        #page-compress .speed-chip.active { background: rgba(198, 255, 0, 0.2); border-color: var(--rune-gold); box-shadow: 0 0 10px rgba(198, 255, 0, 0.2); }
 
         .tab-bar {
             position: fixed; bottom: 0; left: 0; right: 0; height: calc(var(--safe-bottom) + 65px);
-            background: rgba(10, 12, 15, 0.6); backdrop-filter: blur(30px);
-            display: flex; justify-content: space-around; padding-top: 10px; border-top: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(5, 10, 7, 0.85); backdrop-filter: blur(25px);
+            display: flex; justify-content: space-around; padding-top: 10px; border-top: 1px solid rgba(198, 255, 0, 0.15);
         }
-        .tab-item { display: flex; flex-direction: column; align-items: center; color: rgba(255,255,255,0.4); font-size: 11px; }
-        .tab-item.active { color: var(--rune-gold); }
+        .tab-item { display: flex; flex-direction: column; align-items: center; color: rgba(255,255,255,0.4); font-size: 11px; gap: 5px; transition: color 0.3s;}
+        .tab-item.active { color: var(--rune-gold); text-shadow: 0 0 8px var(--rune-gold-glow); }
+        .tab-item:nth-child(2).active { color: var(--rune-ice); text-shadow: 0 0 8px rgba(0,255,255,0.4); }
+        .tab-item:nth-child(3).active { color: var(--psy-pink); text-shadow: 0 0 8px rgba(255,0,255,0.4); }
+        .tab-item:nth-child(4).active { color: var(--rune-gold); text-shadow: 0 0 8px var(--rune-gold-glow); }
+        .tab-item:nth-child(5).active { color: var(--rune-ice); text-shadow: 0 0 8px rgba(0,255,255,0.4); }
 
         .progress-box { margin-top: 20px; display: none; }
-        .bar-bg { background: rgba(0,0,0,0.6); height: 8px; border-radius: 4px; overflow: hidden; margin-top: 5px; }
-        .bar-fill { background: var(--rune-gold); height: 100%; width: 0%; transition: width 0.2s; box-shadow: 0 0 10px var(--rune-gold); }
+        .bar-bg { background: rgba(0,0,0,0.8); height: 8px; border-radius: 4px; overflow: hidden; margin-top: 5px; }
+        .bar-fill { height: 100%; width: 0%; transition: width 0.2s; box-shadow: 0 0 10px currentColor; }
 
-        .result-img { width: 100%; border-radius: 16px; margin-top: 15px; border: 1px solid var(--rune-gold); }
+        .result-img { width: 100%; border-radius: 16px; margin-top: 15px; border: 1px solid var(--rune-gold); box-shadow: 0 5px 15px rgba(0,0,0,0.5); }
 
         .page { display: none; }
-        .page.active { display: block; animation: fadeIn 0.5s ease; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .page.active { display: block; animation: fadeIn 0.4s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(15px) scale(0.98); } to { opacity: 1; transform: translateY(0) scale(1); } }
     </style>
 </head>
 <body>
 
 <div class="app-background"></div>
-<div id="ios-video-container"></div>
+<div id="ios-video-container" style="display:none;"></div>
 
 <header class="header">
     <h1>VALHALLA FORGE</h1>
-    <div style="font-size:10px; color:rgba(255,255,255,0.5); letter-spacing:2px;">LONG ARTIFACT REFORGER</div>
 </header>
 
 <main class="main-content">
     
+    <!-- 鎔鑄頁 -->
     <div id="page-convert" class="page active">
         <div class="card">
-            <span class="section-title">ᛟ 影像鎔鑄爐</span>
+            <span class="section-title" style="color: var(--rune-gold);">ᛟ 迷幻鎔鑄爐</span>
             <div class="upload-area">
-                <input type="file" accept="video/*" id="video-input" onchange="handleVideoUpload(this)">
-                <span style="font-size:40px; color:var(--rune-gold);">ᛟ</span>
-                <span id="name-video" style="font-size:12px; color:rgba(255,255,255,0.5);">獻上凡界長卷 (選擇影片)</span>
+                <input type="file" accept="video/*" onchange="handleFile(this, 'video')">
+                <span style="font-size:30px; color:var(--rune-gold); text-shadow: 0 0 10px var(--rune-gold-glow);">ᛟ</span>
+                <span id="name-video" style="font-size:12px; color:rgba(255,255,255,0.6); margin-top: 5px;">注入幻界之影 (上傳影片)</span>
             </div>
-            
             <div class="input-group">
-                <div class="label-row"><span>法陣尺度</span><span id="val-width" style="color:var(--rune-gold)">320px</span></div>
-                <input type="range" min="160" max="480" step="20" value="320" oninput="updateCfg('width', this.value)">
+                <div class="label-row"><span>解析度</span><span id="val-width">320px</span></div>
+                <input type="range" min="160" max="1080" step="40" value="320" oninput="updateCfg('width', this.value)">
             </div>
-
             <div class="input-group">
-                <div class="label-row"><span>鎔鑄時長 (秒)</span><span id="val-duration" style="color:var(--rune-gold)">5s</span></div>
-                <input type="range" min="1" max="60" value="5" id="duration-slider" oninput="updateCfg('duration', this.value)">
+                <div class="label-row"><span>鎔鑄時長</span><span id="val-duration">5.00s</span></div>
+                <input type="range" min="0.1" max="60" step="0.01" value="5.00" id="dur-slider" oninput="updateCfg('duration', this.value)">
             </div>
-
-            <div class="input-group">
-                <div class="label-row"><span>時之流速 (FPS)</span><span id="val-fps" style="color:var(--rune-gold)">10</span></div>
-                <input type="range" min="5" max="24" value="10" oninput="updateCfg('fps', this.value)">
-            </div>
-
-            <button class="rune-btn primary" onclick="startConvert()">注入長效神力 (開始鎔鑄)</button>
-            
-            <div id="prog-convert" class="progress-box">
-                <div class="label-row"><span id="log-convert">凝聚時空殘片...</span></div>
-                <div class="bar-bg"><div id="fill-convert" class="bar-fill"></div></div>
-            </div>
-
+            <button class="rune-btn primary" onclick="startConvert()">開啟無限循環鎔鑄</button>
+            <div id="prog-convert" class="progress-box"><div class="bar-bg"><div id="fill-convert" class="bar-fill" style="background:var(--rune-gold); color:var(--rune-gold);"></div></div></div>
             <div id="res-convert"></div>
         </div>
     </div>
 
-    <!-- 其他頁面省略內容以保持空間，邏輯與前版一致 -->
-    <div id="page-compress" class="page"><div class="card"><span class="section-title">ᛒ 封印壓縮陣</span><p style="text-align:center; opacity:0.6;">請先從鎔鑄爐產生物件</p></div></div>
-    <div id="page-speed" class="page"><div class="card"><span class="section-title">ᛋ 時空扭曲儀</span><p style="text-align:center; opacity:0.6;">請先從鎔鑄爐產生物件</p></div></div>
+    <!-- 修剪與剪裁頁 -->
+    <div id="page-trim" class="page">
+        <div class="card">
+            <span class="section-title" style="color: var(--rune-ice);">ᚦ 符文修剪與剪裁陣</span>
+            <div id="trim-upload-prompt" class="upload-area" style="border-color: rgba(0,255,255,0.3); background: rgba(0,255,255,0.05);">
+                <input type="file" accept="image/gif" onchange="handleFile(this, 'trim')">
+                <span style="font-size:30px; color:var(--rune-ice); text-shadow: 0 0 10px rgba(0,255,255,0.4);">ᚦ</span>
+                <span id="name-trim" style="font-size:12px; color:rgba(255,255,255,0.6); margin-top: 5px;">等待法器傳送或上傳 GIF...</span>
+            </div>
+
+            <div id="trim-controls" style="display:none; margin-top:20px;">
+                <div class="input-group">
+                    <div class="label-row"><span>起始影格</span><span id="val-start">0</span></div>
+                    <input type="range" min="0" value="0" id="trim-start" oninput="updateTrim()">
+                </div>
+                <div class="input-group">
+                    <div class="label-row"><span>結束影格</span><span id="val-end">10</span></div>
+                    <input type="range" min="1" value="10" id="trim-end" oninput="updateTrim()">
+                </div>
+                <div class="input-group">
+                    <div class="label-row"><span>畫面剪裁比例</span></div>
+                    <div class="speed-grid">
+                        <div class="speed-chip active" onclick="setCrop('full', this)">全畫面</div>
+                        <div class="speed-chip" onclick="setCrop('1:1', this)">1:1</div>
+                        <div class="speed-chip" onclick="setCrop('4:5', this)">4:5</div>
+                    </div>
+                </div>
+                <button class="rune-btn transfer-trim" onclick="processTrim()">重新修剪並輸出</button>
+            </div>
+
+            <div id="prog-trim" class="progress-box"><div class="bar-bg"><div id="fill-trim" class="bar-fill" style="background:var(--rune-ice); color:var(--rune-ice);"></div></div></div>
+            <div id="res-trim"></div>
+        </div>
+    </div>
+
+    <!-- 速度頁 -->
+    <div id="page-speed" class="page">
+        <div class="card">
+            <span class="section-title" style="color: var(--psy-pink);">ᛋ 時空扭曲儀</span>
+            
+            <div id="speed-upload-prompt" class="upload-area" style="border-color: rgba(255,0,255,0.3); background: rgba(255,0,255,0.05);">
+                <input type="file" accept="image/gif" onchange="handleFile(this, 'speed')">
+                <span style="font-size:30px; color:var(--psy-pink); text-shadow: 0 0 10px rgba(255,0,255,0.4);">ᛋ</span>
+                <span id="name-speed" style="font-size:12px; color:rgba(255,255,255,0.6); margin-top: 5px;">等待法器傳送或上傳 GIF...</span>
+            </div>
+
+            <div id="speed-controls" style="display:none; margin-top:20px;">
+                <div class="speed-grid" style="grid-template-columns: 1fr;">
+                    <div class="speed-chip" onclick="setSpd(4, this)">4.0x 迅雷 (最高倍率)</div>
+                    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-top:10px;">
+                        <div class="speed-chip" onclick="setSpd(2, this)">2.0x 疾風</div>
+                        <div class="speed-chip active" onclick="setSpd(1, this)">1.0x 現世</div>
+                        <div class="speed-chip" onclick="setSpd(0.5, this)">0.5x 泥沼</div>
+                        <div class="speed-chip" onclick="setSpd(0.25, this)">0.25x 永劫</div>
+                    </div>
+                </div>
+                <button class="rune-btn transfer-speed" onclick="processSpeed()">套用新速度並輸出</button>
+            </div>
+
+            <div id="prog-speed" class="progress-box"><div class="bar-bg"><div id="fill-speed" class="bar-fill" style="background:var(--psy-pink); color:var(--psy-pink);"></div></div></div>
+            <div id="res-speed"></div>
+        </div>
+    </div>
+
+    <!-- 壓縮頁 -->
+    <div id="page-compress" class="page">
+        <div class="card">
+            <span class="section-title" style="color: var(--rune-gold);">ᛗ 封印壓縮陣</span>
+            
+            <div id="compress-upload-prompt" class="upload-area" style="border-color: rgba(198,255,0,0.3); background: rgba(198,255,0,0.05);">
+                <input type="file" accept="image/gif" onchange="handleFile(this, 'compress')">
+                <span style="font-size:30px; color:var(--rune-gold); text-shadow: 0 0 10px var(--rune-gold-glow);">ᛗ</span>
+                <span id="name-compress" style="font-size:12px; color:rgba(255,255,255,0.6); margin-top: 5px;">等待法器傳送或上傳 GIF...</span>
+            </div>
+
+            <div id="compress-controls" style="display:none; margin-top:20px;">
+                <div class="input-group">
+                    <div class="label-row"><span>壓縮比例 (降尺寸)</span></div>
+                    <div class="speed-grid">
+                        <div class="speed-chip active" onclick="setCompressScale(1, this)">保持原尺寸</div>
+                        <div class="speed-chip" onclick="setCompressScale(0.75, this)">75%</div>
+                        <div class="speed-chip" onclick="setCompressScale(0.5, this)">50%</div>
+                    </div>
+                </div>
+                <div class="input-group">
+                    <div class="label-row"><span>降色封印 (降低色彩數)</span></div>
+                    <div class="speed-grid">
+                        <div class="speed-chip active" onclick="setCompressColors(256, this)">256 色</div>
+                        <div class="speed-chip" onclick="setCompressColors(128, this)">128 色</div>
+                        <div class="speed-chip" onclick="setCompressColors(64, this)">64 色</div>
+                    </div>
+                </div>
+                <button class="rune-btn primary" onclick="processCompress()">開始極限壓縮</button>
+            </div>
+
+            <div id="prog-compress" class="progress-box"><div class="bar-bg"><div id="fill-compress" class="bar-fill" style="background:var(--rune-gold); color:var(--rune-gold);"></div></div></div>
+            <div id="res-compress"></div>
+        </div>
+    </div>
+
+    <!-- AI 去重頁 -->
+    <div id="page-ai" class="page">
+        <div class="card">
+            <span class="section-title" style="color: var(--rune-ice);">ᚫ AI 自動去重儀</span>
+            
+            <div id="ai-upload-prompt" class="upload-area" style="border-color: rgba(0,255,255,0.3); background: rgba(0,255,255,0.05);">
+                <input type="file" accept="image/gif" onchange="handleFile(this, 'ai')">
+                <span style="font-size:30px; color:var(--rune-ice); text-shadow: 0 0 10px rgba(0,255,255,0.4);">ᚫ</span>
+                <span id="name-ai" style="font-size:12px; color:rgba(255,255,255,0.6); margin-top: 5px;">等待法器傳送或上傳 GIF...</span>
+            </div>
+
+            <div id="ai-controls" style="display:none; margin-top:20px;">
+                <div class="input-group">
+                    <div class="label-row"><span>AI 敏感度</span></div>
+                    <div class="speed-grid" style="grid-template-columns: 1fr 1fr 1fr;">
+                        <div class="speed-chip" onclick="setAISensitivity(15, this)">低度 (去重少)</div>
+                        <div class="speed-chip active" onclick="setAISensitivity(25, this)">標準去重</div>
+                        <div class="speed-chip" onclick="setAISensitivity(35, this)">高度 (去重多)</div>
+                    </div>
+                </div>
+                <button class="rune-btn transfer-trim" onclick="processAIClean()">開啟 AI 自動去重複影格</button>
+            </div>
+
+            <div id="prog-ai" class="progress-box">
+                <div class="label-row"><span id="ai-progress-status" style="color:var(--rune-ice)">AI 分析中...</span></div>
+                <div class="bar-bg"><div id="fill-ai" class="bar-fill" style="background:var(--rune-ice); color:var(--rune-ice);"></div></div>
+            </div>
+            <div id="res-ai"></div>
+        </div>
+    </div>
 
 </main>
 
 <nav class="tab-bar">
-    <div class="tab-item active" onclick="switchTab('convert', this)"><span>ᛟ</span><span>鎔鑄</span></div>
-    <div class="tab-item" onclick="switchTab('compress', this)"><span>ᛒ</span><span>封印</span></div>
-    <div class="tab-item" onclick="switchTab('speed', this)"><span>ᛋ</span><span>時空</span></div>
+    <div class="tab-item active" onclick="switchTab('convert', this)">
+        <span style="font-size: 18px;">ᛟ</span><span>鎔鑄</span>
+    </div>
+    <div class="tab-item" id="tab-trim" onclick="switchTab('trim', this)">
+        <span style="font-size: 18px;">ᚦ</span><span>剪裁</span>
+    </div>
+    <div class="tab-item" id="tab-speed" onclick="switchTab('speed', this)">
+        <span style="font-size: 18px;">ᛋ</span><span>速度</span>
+    </div>
+    <div class="tab-item" id="tab-compress" onclick="switchTab('compress', this)">
+        <span style="font-size: 18px;">ᛗ</span><span>壓縮</span>
+    </div>
+    <div class="tab-item" id="tab-ai" onclick="switchTab('ai', this)">
+        <span style="font-size: 18px;">ᚫ</span><span>AI去重</span>
+    </div>
 </nav>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gif.js/0.2.0/gif.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gif-frames@1.0.1/dist/gif-frames.min.js"></script>
+
 <script>
     const AppState = {
-        videoFile: null,
-        workerUrl: '',
-        config: { width: 320, fps: 10, duration: 5 }
+        video: null, workerUrl: '',
+        config: { width: 320, fps: 10, duration: 5.00, speedMultiplier: 1.0, compressScale: 1.0, compressColors: 256, aiSensitivity: 25 },
+        trimData: { frames: [], start: 0, end: 0, crop: 'full' },
+        speedData: { frames: [] },
+        compressData: { frames: [] },
+        aiData: { frames: [] },
+        currentGifBlob: null
     };
 
-    (async () => {
-        const resp = await fetch('https://cdnjs.cloudflare.com/ajax/libs/gif.js/0.2.0/gif.worker.js');
-        AppState.workerUrl = URL.createObjectURL(await resp.blob());
-    })();
-
-    function updateCfg(k, v) {
-        AppState.config[k] = parseInt(v);
-        document.getElementById(`val-${k}`).textContent = v + (k==='width'?'px':(k==='duration'?'s':''));
+    // 背景無延遲漂浮粒子產生器
+    function createFireflies() {
+        const container = document.createElement('div');
+        container.className = 'firefly-layer';
+        for(let i=0; i<15; i++) {
+            const f = document.createElement('div');
+            f.className = 'firefly';
+            f.style.left = (Math.random() * 100) + 'vw';
+            f.style.animationDuration = (Math.random() * 10 + 10) + 's';
+            f.style.animationDelay = (Math.random() * 15) + 's';
+            container.appendChild(f);
+        }
+        document.body.prepend(container);
     }
 
-    function handleVideoUpload(input) {
+    // 載入 Worker 並初始化視覺效果
+    window.onload = async () => {
+        createFireflies();
+        try {
+            const resp = await fetch('https://cdnjs.cloudflare.com/ajax/libs/gif.js/0.2.0/gif.worker.js');
+            AppState.workerUrl = URL.createObjectURL(await resp.blob());
+        } catch(e) {
+            console.error("Worker載入失敗", e);
+        }
+    };
+
+    function switchTab(p, el) {
+        document.querySelectorAll('.page').forEach(pg => pg.classList.remove('active'));
+        document.querySelectorAll('.tab-item').forEach(tb => tb.classList.remove('active'));
+        document.getElementById(`page-${p}`).classList.add('active');
+        if(el) el.classList.add('active');
+        else document.getElementById(`tab-${p}`).classList.add('active');
+    }
+
+    function updateCfg(k, v) {
+        if(k === 'duration') {
+            AppState.config[k] = parseFloat(v);
+            document.getElementById(`val-${k}`).textContent = parseFloat(v).toFixed(2) + 's';
+        } else {
+            AppState.config[k] = parseInt(v);
+            document.getElementById(`val-${k}`).textContent = v + (k==='width'?'px':'');
+        }
+    }
+
+    function handleFile(input, type) {
         const file = input.files[0];
         if(!file) return;
-        AppState.videoFile = file;
-        document.getElementById('name-video').textContent = "📜 " + file.name;
+        if(type === 'video') {
+            AppState.video = file;
+            document.getElementById('name-video').textContent = "📜 " + file.name;
+            const v = document.createElement('video');
+            v.src = URL.createObjectURL(file);
+            v.onloadedmetadata = () => {
+                const durSlider = document.getElementById('dur-slider');
+                durSlider.max = v.duration.toFixed(2);
+            };
+        } else {
+            loadGifForEditing(file, type);
+        }
+    }
+
+    async function transferToTab(destTab) {
+        if(!AppState.currentGifBlob) return;
+        switchTab(destTab);
+        document.getElementById(`name-${destTab}`).textContent = "✨ 影像已從鎔鑄爐傳送";
+        loadGifForEditing(AppState.currentGifBlob, destTab);
+    }
+
+    async function loadGifForEditing(source, type) {
+        const url = (source instanceof Blob) ? URL.createObjectURL(source) : URL.createObjectURL(source);
+        const frames = await gifFrames({ url: url, frames: 'all', outputType: 'canvas' });
         
-        // 自動偵測影片長度並更新滑桿上限
-        const v = document.createElement('video');
-        v.src = URL.createObjectURL(file);
-        v.onloadedmetadata = () => {
-            const max = Math.floor(v.duration);
-            const slider = document.getElementById('duration-slider');
-            slider.max = max;
-            if(AppState.config.duration > max) updateCfg('duration', max);
-        };
+        if (type === 'trim') {
+            AppState.trimData.frames = frames;
+            const total = frames.length - 1;
+            document.getElementById('trim-start').max = total;
+            document.getElementById('trim-end').max = total;
+            document.getElementById('trim-end').value = total;
+            AppState.trimData.start = 0; AppState.trimData.end = total;
+            document.getElementById('trim-controls').style.display = 'block';
+            document.getElementById('trim-upload-prompt').style.display = 'none';
+            updateTrim();
+        } else if (type === 'speed') {
+            AppState.speedData.frames = frames;
+            document.getElementById('speed-controls').style.display = 'block';
+            document.getElementById('speed-upload-prompt').style.display = 'none';
+        } else if (type === 'compress') {
+            AppState.compressData.frames = frames;
+            document.getElementById('compress-controls').style.display = 'block';
+            document.getElementById('compress-upload-prompt').style.display = 'none';
+        } else if (type === 'ai') {
+            AppState.aiData.frames = frames;
+            document.getElementById('ai-controls').style.display = 'block';
+            document.getElementById('ai-upload-prompt').style.display = 'none';
+        }
+    }
+
+    function updateTrim() {
+        const s = parseInt(document.getElementById('trim-start').value);
+        const e = parseInt(document.getElementById('trim-end').value);
+        AppState.trimData.start = s;
+        AppState.trimData.end = Math.max(s + 1, e);
+        document.getElementById('val-start').textContent = s;
+        document.getElementById('val-end').textContent = AppState.trimData.end;
+    }
+
+    function setCrop(type, el) {
+        AppState.trimData.crop = type;
+        document.querySelectorAll('#page-trim .speed-chip').forEach(c => c.classList.remove('active'));
+        el.classList.add('active');
+    }
+
+    function setSpd(v, el) {
+        AppState.config.speedMultiplier = v;
+        document.querySelectorAll('#page-speed .speed-chip').forEach(c => c.classList.remove('active'));
+        el.classList.add('active');
+    }
+
+    function setCompressScale(v, el) {
+        AppState.config.compressScale = v;
+        document.querySelectorAll('#page-compress .speed-grid:nth-of-type(1) .speed-chip').forEach(c => c.classList.remove('active'));
+        el.classList.add('active');
+    }
+
+    function setCompressColors(v, el) {
+        AppState.config.compressColors = v;
+        document.querySelectorAll('#page-compress .speed-grid:nth-of-type(2) .speed-chip').forEach(c => c.classList.remove('active'));
+        el.classList.add('active');
+    }
+
+    function setAISensitivity(v, el) {
+        AppState.config.aiSensitivity = v;
+        document.querySelectorAll('#page-ai .speed-chip').forEach(c => c.classList.remove('active'));
+        el.classList.add('active');
     }
 
     async function startConvert() {
-        if(!AppState.videoFile) return;
+        if(!AppState.video) return;
         const prog = document.getElementById('prog-convert');
         const fill = document.getElementById('fill-convert');
-        const log = document.getElementById('log-convert');
         prog.style.display = 'block';
+        document.getElementById('res-convert').innerHTML = '';
 
         const video = document.createElement('video');
-        video.src = URL.createObjectURL(AppState.videoFile);
+        video.src = URL.createObjectURL(AppState.video);
         video.muted = true; video.playsInline = true;
-        
         const container = document.getElementById('ios-video-container');
         container.innerHTML = ''; container.appendChild(video);
 
@@ -243,62 +516,280 @@
         canvas.height = Math.floor(AppState.config.width * (video.videoHeight / video.videoWidth));
 
         const gif = new GIF({ 
-            workers: 4, quality: 15, 
+            workers: 4, quality: 10, 
             width: canvas.width, height: canvas.height, 
-            workerScript: AppState.workerUrl 
+            workerScript: AppState.workerUrl, repeat: 0 
         });
 
-        // 決定要轉換的總幀數
-        const totalDuration = Math.min(video.duration, AppState.config.duration);
-        const totalFrames = Math.floor(totalDuration * AppState.config.fps);
-        const interval = 1 / AppState.config.fps;
+        const dur = Math.min(video.duration, AppState.config.duration);
+        const total = Math.floor(dur * AppState.config.fps);
 
-        for(let i=0; i < totalFrames; i++) {
-            video.currentTime = i * interval;
-            await new Promise(r => {
-                video.onseeked = () => setTimeout(r, 80); // iOS 需要稍微等待渲染
-            });
+        for(let i=0; i < total; i++) {
+            video.currentTime = i * (1 / AppState.config.fps);
+            await new Promise(r => { video.onseeked = () => setTimeout(r, 60); });
             ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-            gif.addFrame(canvas, {copy: true, delay: interval * 1000});
-            
-            const p = Math.floor((i / totalFrames) * 40);
-            fill.style.width = p + '%';
-            log.textContent = `擷取靈魂片段: ${i+1}/${totalFrames}`;
+            gif.addFrame(canvas, {copy: true, delay: 1000 / AppState.config.fps});
+            fill.style.width = (i / total * 50) + '%';
         }
 
-        gif.on('progress', p => {
-            fill.style.width = (40 + p * 60) + '%';
-            log.textContent = `北歐神力織造中: ${Math.floor(p*100)}%`;
-        });
-
+        gif.on('progress', p => fill.style.width = (50 + p * 50) + '%');
         gif.on('finished', blob => {
+            AppState.currentGifBlob = blob;
             const url = URL.createObjectURL(blob);
             document.getElementById('res-convert').innerHTML = `
                 <img src="${url}" class="result-img">
-                <button class="rune-btn" style="background:var(--rune-ice); color:#000; margin-top:15px;" onclick="saveToAlbum('${url}')">銘刻於神殿 (儲存)</button>
+                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:8px; margin-top:15px;">
+                    <button class="rune-btn transfer-trim" style="margin-top:0;" onclick="transferToTab('trim')">✂️ 剪裁</button>
+                    <button class="rune-btn transfer-speed" style="margin-top:0;" onclick="transferToTab('speed')">🌪️ 變速</button>
+                    <button class="rune-btn primary" style="margin-top:0;" onclick="transferToTab('compress')">📦 壓縮</button>
+                    <button class="rune-btn transfer-trim" style="margin-top:0;" onclick="transferToTab('ai')"> AI去重</button>
+                </div>
+                <button class="rune-btn" onclick="saveFile('${url}')">直接儲存 GIF</button>
             `;
             prog.style.display = 'none';
-            container.innerHTML = '';
         });
-
         gif.render();
     }
 
-    function saveToAlbum(url) {
-        const a = document.createElement('a');
-        a.href = url; a.download = `Valhalla_${Date.now()}.gif`;
-        a.click();
+    async function processTrim() {
+        if(AppState.trimData.frames.length === 0) return;
+        const prog = document.getElementById('prog-trim');
+        const fill = document.getElementById('fill-trim');
+        prog.style.display = 'block';
+        document.getElementById('res-trim').innerHTML = '';
+
+        const { frames, start, end, crop } = AppState.trimData;
+        const firstImg = frames[0].getImage();
+        let fw = firstImg.width, fh = firstImg.height, sx = 0, sy = 0;
+
+        if(crop === '1:1') {
+            fw = fh = Math.min(firstImg.width, firstImg.height);
+            sx = (firstImg.width - fw) / 2; sy = (firstImg.height - fh) / 2;
+        } else if(crop === '4:5') {
+            fw = firstImg.width; fh = fw * 1.25;
+            if(fh > firstImg.height) { fh = firstImg.height; fw = fh / 1.25; }
+            sx = (firstImg.width - fw) / 2; sy = (firstImg.height - fh) / 2;
+        }
+
+        const gif = new GIF({ workers: 4, quality: 10, width: fw, height: fh, workerScript: AppState.workerUrl, repeat: 0 });
+
+        for(let i = start; i <= end; i++) {
+            const c = document.createElement('canvas');
+            c.width = fw; c.height = fh;
+            c.getContext('2d').drawImage(frames[i].getImage(), sx, sy, fw, fh, 0, 0, fw, fh);
+            gif.addFrame(c, {copy: true, delay: frames[i].frameInfo.delay * 10});
+            fill.style.width = ((i-start)/(end-start)*50) + '%';
+        }
+
+        gif.on('progress', p => fill.style.width = (50 + p * 50) + '%');
+        gif.on('finished', blob => {
+            const url = URL.createObjectURL(blob);
+            document.getElementById('res-trim').innerHTML = `
+                <img src="${url}" class="result-img" style="border-color: var(--rune-ice);">
+                <button class="rune-btn transfer-trim" onclick="saveFile('${url}')">儲存修剪後的 GIF</button>
+            `;
+            prog.style.display = 'none';
+        });
+        gif.render();
     }
 
-    function switchTab(p, el) {
-        document.querySelectorAll('.page').forEach(pg => pg.classList.remove('active'));
-        document.querySelectorAll('.tab-item').forEach(tb => tb.classList.remove('active'));
-        document.getElementById(`page-${p}`).classList.add('active');
-        el.classList.add('active');
+    async function processSpeed() {
+        if(!AppState.speedData.frames || AppState.speedData.frames.length === 0) return;
+        const prog = document.getElementById('prog-speed');
+        const fill = document.getElementById('fill-speed');
+        prog.style.display = 'block';
+        document.getElementById('res-speed').innerHTML = '';
+
+        const frames = AppState.speedData.frames;
+        const firstImg = frames[0].getImage();
+        const fw = firstImg.width, fh = firstImg.height;
+
+        const gif = new GIF({ workers: 4, quality: 10, width: fw, height: fh, workerScript: AppState.workerUrl, repeat: 0 });
+        const multi = AppState.config.speedMultiplier || 1;
+
+        for(let i = 0; i < frames.length; i++) {
+            const c = document.createElement('canvas');
+            c.width = fw; c.height = fh;
+            c.getContext('2d').drawImage(frames[i].getImage(), 0, 0);
+            
+            const baseDelayMs = frames[i].frameInfo.delay * 10;
+            const newDelay = baseDelayMs / multi;
+            
+            gif.addFrame(c, {copy: true, delay: newDelay});
+            fill.style.width = ((i / frames.length) * 50) + '%';
+        }
+
+        gif.on('progress', p => fill.style.width = (50 + p * 50) + '%');
+        gif.on('finished', blob => {
+            const url = URL.createObjectURL(blob);
+            document.getElementById('res-speed').innerHTML = `
+                <img src="${url}" class="result-img" style="border-color: var(--psy-pink);">
+                <button class="rune-btn transfer-speed" onclick="saveFile('${url}')">儲存變速後的 GIF</button>
+            `;
+            prog.style.display = 'none';
+        });
+        gif.render();
+    }
+
+    async function processCompress() {
+        if(!AppState.compressData.frames || AppState.compressData.frames.length === 0) return;
+        const prog = document.getElementById('prog-compress');
+        const fill = document.getElementById('fill-compress');
+        prog.style.display = 'block';
+        document.getElementById('res-compress').innerHTML = '';
+
+        const frames = AppState.compressData.frames;
+        const firstImg = frames[0].getImage();
+        
+        const scale = AppState.config.compressScale;
+        const colors = AppState.config.compressColors;
+        
+        const fw = Math.floor(firstImg.width * scale);
+        const fh = Math.floor(firstImg.height * scale);
+
+        const gif = new GIF({ 
+            workers: 4, 
+            quality: Math.round(256 / colors * 5), 
+            width: fw, 
+            height: fh, 
+            workerScript: AppState.workerUrl, 
+            repeat: 0 
+        });
+
+        for(let i = 0; i < frames.length; i++) {
+            const c = document.createElement('canvas');
+            c.width = fw; c.height = fh;
+            c.getContext('2d').drawImage(frames[i].getImage(), 0, 0, fw, fh);
+            gif.addFrame(c, {copy: true, delay: frames[i].frameInfo.delay * 10});
+            fill.style.width = ((i / frames.length) * 50) + '%';
+        }
+
+        gif.on('progress', p => fill.style.width = (50 + p * 50) + '%');
+        gif.on('finished', blob => {
+            const url = URL.createObjectURL(blob);
+            document.getElementById('res-compress').innerHTML = `
+                <img src="${url}" class="result-img" style="border-color: var(--rune-gold);">
+                <button class="rune-btn primary" onclick="saveFile('${url}')">儲存壓縮後的 GIF</button>
+            `;
+            prog.style.display = 'none';
+        });
+        gif.render();
+    }
+
+    function getFramesSimilarity(imgData1, imgData2) {
+        const d1 = imgData1.data;
+        const d2 = imgData2.data;
+        let diff = 0;
+        const len = d1.length;
+        // 採樣像素以防止行動裝置卡頓
+        const step = Math.max(4, Math.floor(len / 30000)) * 4; 
+        let count = 0;
+        for (let i = 0; i < len; i += step) {
+            diff += Math.abs(d1[i] - d2[i]);       // R
+            diff += Math.abs(d1[i+1] - d2[i+1]);   // G
+            diff += Math.abs(d1[i+2] - d2[i+2]);   // B
+            count += 3;
+        }
+        return diff / count; // 0 (完全相同) 到 255 (完全不同)
+    }
+
+    async function processAIClean() {
+        if(!AppState.aiData.frames || AppState.aiData.frames.length === 0) return;
+        const prog = document.getElementById('prog-ai');
+        const fill = document.getElementById('fill-ai');
+        const statusText = document.getElementById('ai-progress-status');
+        prog.style.display = 'block';
+        document.getElementById('res-ai').innerHTML = '';
+
+        const frames = AppState.aiData.frames;
+        const firstImg = frames[0].getImage();
+        const fw = firstImg.width;
+        const fh = firstImg.height;
+
+        statusText.textContent = "AI 正在比對重複影格...";
+        await new Promise(r => setTimeout(r, 100));
+
+        // 用於比對的臨時 Canvas
+        const compCanvas = document.createElement('canvas');
+        compCanvas.width = fw; compCanvas.height = fh;
+        const compCtx = compCanvas.getContext('2d');
+
+        const finalFrames = [];
+        let deletedCount = 0;
+
+        // 讀取第一個影格
+        compCtx.drawImage(frames[0].getImage(), 0, 0);
+        let prevImgData = compCtx.getImageData(0, 0, fw, fh);
+        
+        finalFrames.push({
+            image: frames[0].getImage(),
+            delay: frames[0].frameInfo.delay * 10
+        });
+
+        const sensitivity = AppState.config.aiSensitivity; // 預設 25 (值越低越敏感，去重越少)
+
+        for(let i = 1; i < frames.length; i++) {
+            compCtx.drawImage(frames[i].getImage(), 0, 0);
+            const currImgData = compCtx.getImageData(0, 0, fw, fh);
+
+            const diff = getFramesSimilarity(prevImgData, currImgData);
+
+            if(diff < sensitivity) {
+                // 如果影格差異極小，視為重複影格並進行融合
+                finalFrames[finalFrames.length - 1].delay += (frames[i].frameInfo.delay * 10);
+                deletedCount++;
+            } else {
+                // 若不相同，保留並作為下一個基準影格
+                finalFrames.push({
+                    image: frames[i].getImage(),
+                    delay: frames[i].frameInfo.delay * 10
+                });
+                prevImgData = currImgData;
+            }
+            fill.style.width = ((i / frames.length) * 40) + '%';
+        }
+
+        statusText.textContent = `AI 淨化完畢 (移除 ${deletedCount} 幀重複)，正在打包輸出...`;
+
+        const gif = new GIF({ 
+            workers: 4, 
+            quality: 10, 
+            width: fw, 
+            height: fh, 
+            workerScript: AppState.workerUrl, 
+            repeat: 0 
+        });
+
+        for(let j = 0; j < finalFrames.length; j++) {
+            const tempC = document.createElement('canvas');
+            tempC.width = fw; tempC.height = fh;
+            tempC.getContext('2d').drawImage(finalFrames[j].image, 0, 0);
+            gif.addFrame(tempC, {copy: true, delay: finalFrames[j].delay});
+            fill.style.width = (40 + (j / finalFrames.length) * 20) + '%';
+        }
+
+        gif.on('progress', p => fill.style.width = (60 + p * 40) + '%');
+        gif.on('finished', blob => {
+            const url = URL.createObjectURL(blob);
+            document.getElementById('res-ai').innerHTML = `
+                <img src="${url}" class="result-img" style="border-color: var(--rune-ice);">
+                <div style="background: rgba(0, 255, 255, 0.1); border: 1px solid var(--rune-ice); padding: 12px; border-radius: 12px; margin-top: 15px; font-size: 14px; text-align: center;">
+                    ⚡ AI 成功為您移除了 <strong>${deletedCount}</strong> 個多餘影格！<br>
+                    空間優化率達大約 <strong>${Math.round((deletedCount / frames.length) * 100)}%</strong>
+                </div>
+                <button class="rune-btn transfer-trim" onclick="saveFile('${url}')">儲存去重後的 GIF</button>
+            `;
+            prog.style.display = 'none';
+        });
+        gif.render();
+    }
+
+    function saveFile(url) {
+        const a = document.createElement('a');
+        a.href = url; a.download = `Valhalla_Psychedelic_${Date.now()}.gif`;
+        a.click();
     }
 </script>
 
 </body>
 </html>
-
-```
